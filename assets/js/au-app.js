@@ -602,12 +602,20 @@ var auapp = (function(){
                 $(messageList).removeClass('clone-item');
 
                 message['contact']['contact-icon'] = message['contact']['contact-icon'] ?? (message['contact']['contact-photo'] ?? null);
-                console.log(message);
 
                 $(messageList).find('.contacts-icon').find('img').attr('src', message['contact']['contact-icon']);
                 $(messageList).find('.contact-name').html(message['contact']['contact-name']);
-                $(messageList).find('.message-preview').html(message['preview-message']);
-                $(messageList).find('.message-date span').html(message['last-message-time']);
+                $(messageList).find('.message-preview').html(message['preview-message'] ?? 'No messages yet');
+
+                // Default time
+                let time     = (new Date()).toLocaleTimeString(undefined, {
+                    hour:   '2-digit',
+                    hour12:  true,
+                    minute: '2-digit',
+                });
+
+                $(messageList).find('.message-date span').html(message['last-message-time'] ?? time);
+
                 $(messageList).attr('data-message-id', message['contact']['contact-id']);
                 $(messageList).attr('data-contact-id', message['contact']['contact-id']);
 
