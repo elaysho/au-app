@@ -133,14 +133,14 @@ var auapp = (function(){
                 //     $(checkboxParent).append(`<input id="main-account" type="checkbox" class="checkbox" />`);
                 // }, 3000);
 
-                let contactUploadParent = $('#contacts-app--add-new .photo-container');
-                let contactUpload = `
-                    <form method="post" enctype="multipart/form-data">
-                        <label for="upload-contact-photo" class="btn btn-sm mt-3 bg-gray-300">Add Photo</label>
-                        <input type="file" name="photo" id="upload-contact-photo" />
-                    </form>`;
+                // let contactUploadParent = $('#contacts-app--add-new .photo-container');
+                // let contactUpload = `
+                //     <form method="post" enctype="multipart/form-data">
+                //         <label for="upload-contact-photo" class="btn btn-sm mt-3 bg-gray-300">Add Photo</label>
+                //         <input type="file" name="photo" id="upload-contact-photo" />
+                //     </form>`;
 
-                $(contactUploadParent).append(contactUpload);
+                // $(contactUploadParent).append(contactUpload);
             break;
         }
     }
@@ -604,7 +604,7 @@ var auapp = (function(){
                 message['contact']['contact-icon'] = message['contact']['contact-icon'] ?? (message['contact']['contact-photo'] ?? null);
 
                 $(messageList).find('.contacts-icon').find('img').attr('src', message['contact']['contact-icon']);
-                $(messageList).find('.contact-name').html(message['contact']['contact-name']);
+                $(messageList).find('.contact-name').html(message['contact']['nickname'] ?? message['contact']['contact-name']);
                 $(messageList).find('.message-preview').html(message['preview-message'] ?? 'No messages yet');
 
                 // Default time
@@ -657,7 +657,7 @@ var auapp = (function(){
             // Update header
             contact['contact-icon'] = contact['contact-icon'] ?? contact['contact-photo'];
             $('#messages-app--msg .contacts-icon').find('img').attr('src', contact['contact-icon']);
-            $('#messages-app--msg .message-name span').html(contact['contact-name']);
+            $('#messages-app--msg .message-name span').html(contact['nickname'] ?? contact['contact-name']);
         }
     }
 
