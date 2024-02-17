@@ -21,6 +21,11 @@ var auapp = (function(){
         if(phoneSize != null && (['phone-2', 'phone-3', 'phone-5']).includes(phoneSize)) {
             $(`.${defaultSize}`).addClass(phoneSize).removeClass(defaultSize);
         }
+
+        if(mobileCheck()) {
+            $('.h-screen').removeClass('h-screen');
+            $('.overlays-containern').removeClass('h-full');
+        }
     }
 
     function displayTime() {
