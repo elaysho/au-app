@@ -1,0 +1,782 @@
+body {
+    /* font-family: 'SF Pro Display', sans-serif; */
+    /* font-family: "Helvetica Neue", Helvetica, sans-serif; */
+    /* font-family: 'San Francisco'; */
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.ios-primary-color {
+    color: #007AFF;
+}
+
+.feather {
+    width: 16px!important;
+    height: 16px!important;
+}
+
+.artboard-demo {
+    background-color: white!important;
+}
+
+.artboard.phone-4 {
+    width: 380px!important;
+}
+
+.mockup-phone {
+    display: inline-block;
+    border: 1px #000 solid;
+    border-radius: unset!important;
+    background-color: unset!important;
+    padding: unset!important;
+}
+
+.mockup-phone .display, .artboard-demo {
+    border-radius: unset!important;
+}
+
+.mockup-phone .camera, 
+.mockup-phone .camera::before,
+.mockup-phone .camera::after {
+    background-color: unset!important;
+}
+
+.iphone-navbar {
+    width: 88%;
+    margin-top: -20px;
+    height: 20px;
+}
+
+.navbar-space {
+    width: 100%;
+    height: 110px!important;
+}
+
+.time {
+    font-size: 16px;
+}
+
+.signal-wifi-battery {
+    max-width: 23.8%!important;
+    margin-right: -21px;
+}
+
+.screen {
+    position: relative;
+}
+
+.overlays-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1999;
+}
+
+.overlays {
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+#messages-app--msg-tapback.overlays {
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.13);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(3.5px);
+    -webkit-backdrop-filter: blur(3.5px);
+}
+
+#messages-app--new-msg-actionsheet.overlays,
+#messages-app--new-msg-options.overlays,
+#contacts-app--add-new.overlays {
+    background: rgba(0, 0, 0, 0.13);
+    backdrop-filter: unset!important;
+    -webkit-backdrop-filter: unset!important;
+}
+
+.new-msg-options-wrapper,
+.new-contacts-wrapper {
+    overflow: hidden;
+    height: 95%;
+    border-top-right-radius: 12px;
+    border-top-left-radius: 12px;
+}
+
+.new-msg-options-wrapper .navbar-space {
+    width: 100%;
+    height: 20px!important;
+}
+
+.overlays-container .hidden {
+    display: none;
+}
+
+/**
+ * Wallpapers
+ *
+ **/
+
+.iOS-16, .iOS-17, .iOS-gradient-1 {
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.iOS-16 {
+    background-image: url('../imgs/iphone/wallpaper/iOS-16.png');
+}
+
+.iOS-17 {
+    background-image: url('../imgs/iphone/wallpaper/iOS-17-iPhone14.png');
+}
+
+.iOS-gradient-1 {
+    background-image: url('../imgs/iphone/wallpaper/gradient-1.png');
+}
+
+/**
+ * Homescreen
+ *
+ **/
+
+.dock {
+    width: 329px;
+    height: 83px;
+    background-image: url('../imgs/iphone/homescreen/Dock.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.homescreen .search {
+    font-size: 14px!important;
+}
+
+.homescreen .search .feather {
+    width: 12px!important;
+    height: 12px!important;
+}
+
+.homescreen .app-name {
+    font-size: 14px!important;
+    line-height: 1.5;
+}
+
+.homescreen .calendar-month, 
+.homescreen .calendar-day {
+    font-size: 28px!important;
+}
+
+.homescreen .calendar-date {
+    font-size: 98px!important;
+    line-height: .75;
+}
+
+.app-icon, .new-contact-save-btn {
+    cursor: pointer;
+}
+
+
+/**
+ * Apps
+ *
+ **/
+
+.app-background {
+    background-color: #f9f9f9!important;
+}
+
+.app-background .navbar-space {
+    width: 100%;
+    height: 130px!important;
+}
+
+.app-background .navbar-space .feather,
+.new-msg-options-wrapper .navbar-space .feather {
+    width: 24px!important;
+    height: 24px!important;
+}
+
+.app-search {
+    background-color: #e7e7e7;
+}
+
+/**
+ * Apps - Contacts
+ *
+ **/
+
+.contacts-body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.contacts-list li {
+    border-top: 1px #e7e7e7 solid;
+}
+
+.contacts-list li.header {
+    border-top: unset;
+    padding: unset;
+    margin-top: 0.75rem;
+    color: #e7e7e7;
+}
+
+.contacts-list li.header:first-child {
+    margin-top: unset;
+}
+
+.contacts-list li:last-child {
+    border-bottom: 1px #e7e7e7 solid;
+}
+
+.contacts-icon {
+    height: 75px;
+    width: 75px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.contacts-icon img {
+    object-fit: contain!important;
+}
+
+.app-background .navbar-space .contacts-search-btns .feather {
+    height: 16px!important;
+    width: 16px!important;
+}
+
+.new-contacts-wrapper .navbar-space {
+    height: 62px!important;
+}
+
+.new-contacts-wrapper .contacts-icon {
+    height: 100px!important;
+    width: 100px!important;
+}
+
+.new-contacts-wrapper .feather {
+    height: 24px!important;
+    width: 24px!important;
+}
+
+#upload-contact-photo {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+/**
+ * Apps - Messages - Message List
+ *
+ **/
+
+.messages-app--home .navbar-space {
+    width: 100%;
+    height: 75px!important;
+}
+
+.messages-app--msg .contacts-icon {
+    height: 44px;
+    width: 44px;
+}
+
+.pin-messages .contacts-icon {
+    height: 100px;
+    width: 100px;
+}
+
+.message .contacts-icon {
+    height: 50px;
+    width: 50px;
+}
+
+.message .message-preview {
+    line-height: .75;
+}
+
+.message-date .feather {
+    width: 20px!important;
+    height: 20px!important;
+}
+
+.messages-list li {
+    border-bottom: 1px #e7e7e7 solid;
+    cursor: pointer;
+}
+
+.messages-list li:last-child {
+    border-bottom: unset;
+}
+
+/**
+ * Apps - Messages - New Message
+ *
+ **/
+
+.new-msg-options .contacts-list li {
+    cursor: pointer;
+}
+
+
+/**
+ * Apps - Messages - Message Thread
+ *
+ **/
+
+.messages-app--msg .navbar-space {
+    width: 100%;
+    height: 110px!important;
+    z-index: 999;
+}
+
+.navbar-space .message-name .feather {
+    width: 12px!important;
+    height: 12px!important;
+}
+
+.message-options-btn, .send-message-btn {
+    cursor: pointer;
+}
+
+.message-options-btn .feather {
+    width: 16px!important;
+    height: 16px!important;
+}
+
+.overlay-btn {
+    z-index: 100;
+}
+
+.message-body {
+    background-color: #fff;
+    border-radius: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    /* font-family: "SanFrancisco"; */
+    /* font-size: 1.25rem; */
+    overflow: hidden;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+
+#messages-app--msg-tapback .message-body {
+    background-color: transparent!important;
+}
+
+.message-body::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+
+.message-body:hover, .message-body:active, .message-body:focus {
+    overflow-y: auto;
+  }
+
+.message-body p, 
+.message-input p {
+    border-radius: 1.15rem;
+    line-height: 1.25;
+    max-width: 75%;
+    padding: 0.5rem .875rem;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.message-input p {
+    border-radius: 0.5rem!important;
+}
+
+.message-input p.from-me {
+    align-self: center;
+}
+
+.message-body p::before,
+.message-input p::before,
+.message-body p::after,
+.message-input p::after {
+    bottom: -0.1rem;
+    content: "";
+    height: 1rem;
+    position: absolute;
+}
+  
+p.from-me {
+    align-self: flex-end;
+    background-color: #248bf5;
+    color: #fff; 
+}
+  
+p.from-me::before {
+    border-bottom-left-radius: 0.8rem 0.7rem;
+    border-right: 1rem solid #248bf5;
+    right: -0.35rem;
+    transform: translate(0, -0.1rem);
+}
+  
+p.from-me::after {
+    background-color: #fff;
+    border-bottom-left-radius: 0.5rem;
+    right: -40px;
+    transform:translate(-30px, -2px);
+    width: 10px;
+}
+
+p[class^="from-"] {
+    margin: 0.5rem 0;
+    width: fit-content;
+}
+
+p.from-me ~ p.from-me {
+    margin: 0.25rem 0 0;
+}
+
+p.from-me ~ p.from-me:not(:last-child) {
+    margin: 0.25rem 0 0;
+}
+
+p.from-me ~ p.from-me:last-child {
+    margin-bottom: 0.5rem;
+}
+
+p.from-them {
+    align-items: flex-start;
+    background-color: #e5e5ea;
+    color: #000;
+}
+  
+p.from-them:before {
+    border-bottom-right-radius: 0.8rem 0.7rem;
+    border-left: 1rem solid #e5e5ea;
+    left: -0.35rem;
+    transform: translate(0, -0.1rem);
+}
+  
+p.from-them::after {
+    background-color: #fff;
+    border-bottom-right-radius: 0.5rem;
+    left: 20px;
+    transform: translate(-30px, -2px);
+    width: 10px;
+}
+  
+p[class^="from-"].emoji {
+    background: none;
+    font-size: 2.5rem;
+}
+
+p[class^="from-"].emoji::before {
+    content: none;
+}
+
+.no-tail::before {
+    display: none;
+}
+
+.margin-b_none {
+    margin-top: .1rem !important;
+    margin-bottom: 0 !important;
+}
+
+.margin-t_sm {
+    margin-top: .1rem !important;
+}
+
+.margin-b_one {
+    margin-bottom: 1rem !important;
+}
+
+.margin-t_one {
+    margin-top: 1rem !important;
+}
+
+.stacked-messages p,
+.react-bbl-wrapper p {
+    margin-top: .1rem !important;
+    margin-bottom: 0 !important;
+}
+
+.stacked-messages p:last-child,
+.react-bbl-wrapper p:last-child {
+    margin-bottom: 0.5rem !important;
+}
+
+.message-body p, .sender-switcher {
+    cursor: pointer;
+}
+
+#messages-app--msg-tapback p.from-me.no-tail::after,
+#messages-app--msg-tapback p.from-them.no-tail::after {
+    background-color: transparent!important;
+}
+
+#messages-app--msg-tapback p.from-me::after,
+#messages-app--msg-tapback p.from-them::after {
+    filter: blur(1px);
+}
+
+#messages-app--msg-tapback--reaction .message-body {
+    position: relative;
+}
+
+.from-me-react-bbl,
+.from-them-react-bbl {
+    position: absolute;
+    width: 70%;
+    height: 75px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    /* margin-top: -280px; */
+    z-index: 999;
+}
+
+.from-me-react-bbl {
+    background-image: url('../imgs/iphone/messages/me-react-bubble-light.png');
+}
+
+.from-them-react-bbl {
+    background-image: url('../imgs/iphone/messages/them-react-bubble-light.png');
+}
+
+.from-me-react-bbl img,
+.from-them-react-bbl img {
+    object-fit: contain!important;
+    margin-top: -10px!important;
+}
+
+.from-me-react-bbl small,
+.from-them-react-bbl small {
+    top: -25px;
+    position: relative;
+    display: block;
+}
+
+.flip-vertical {
+    -webkit-transform:scaleY(-1);
+    -moz-transform:scaleY(-1);
+    -ms-transform:scaleY(-1);
+    -o-transform:scaleY(-1);
+    transform:scaleY(-1);
+}
+
+.flip-vertical * {
+    -webkit-transform:scaleY(-1);
+    -moz-transform:scaleY(-1);
+    -ms-transform:scaleY(-1);
+    -o-transform:scaleY(-1);
+    transform:scaleY(-1);
+}
+
+.react-icon {
+    position: absolute;
+    width: 40px;
+    z-index: 1;
+}
+
+@font-face {
+    font-family: "SanFrancisco";
+    src:
+        url("https://cdn.rawgit.com/AllThingsSmitty/fonts/25983b71/SanFrancisco/sanfranciscodisplay-regular-webfont.woff2") format("woff2"),
+        url("https://cdn.rawgit.com/AllThingsSmitty/fonts/25983b71/SanFrancisco/sanfranciscodisplay-regular-webfont.woff") format("woff");
+}
+
+.message-textfield-container {
+    max-height: 120px;
+    min-height: 26px;
+}
+
+.message-textfield-container input,
+.message-textfield-container textarea,
+.message-textfield-container span {
+    display: block;
+    line-height: 1.4;
+    overflow: hidden;
+    resize: vertical;
+    max-height: 120px;
+    min-height: 26px;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.contacts-search-container input:focus,
+.message-textfield-container input:focus,
+.message-textfield-container textarea:focus,
+.message-textfield-container span:focus {
+    outline-width: 0;
+    border-color: transparent;
+}
+
+#send-message-btn {
+    background-color: #248bf5;
+    color: white;
+}
+
+.new-msg-options-wrapper .contacts-icon {
+    height: 40px!important;
+    width: 40px!important;
+}
+
+#messages-app--msg-tapback .message-input {
+    height: 40px!important;
+}
+
+/**
+ * Keyboard
+ *
+ */
+
+#keyboard-container #keyboard {
+    height: 15.5rem!important;
+}
+
+#keyboard {
+    padding: 5px 2px;
+}
+  
+.row {
+    margin: 15px 2px;
+    text-align: center;
+}
+  
+.key {
+    background-color: #fff;
+    -webkit-box-shadow: #333 0px .5px .5px 0px;
+    height: 2em;
+    line-height: 1.9em;
+    font-size: 1.3em;
+    border-radius: 7px;
+    width: 1.4em;
+    text-align: center;
+    display: inline-block;
+    margin: 0 2px;
+}
+  
+.system_key {
+    background-color: #68717D;
+    color: #FFF;
+    border: 1px solid #515A67;
+    line-height: 1.9em!important;
+}
+
+.key.text-lg {
+    line-height: 1.9em!important;
+}
+
+/**
+ * iOS Switch
+ *
+ */
+
+input[type="checkbox"].ios8-switch {
+    position: absolute;
+    margin: 8px 0 0 16px;    
+}
+
+input[type="checkbox"].ios8-switch + label {
+    position: relative;
+    padding: 5px 0 0 50px;
+    line-height: 2.0em;
+}
+
+input[type="checkbox"].ios8-switch + label:before {
+    content: "";
+    position: absolute;
+    display: block;
+    left: 0;
+    top: 0;
+    width: 40px; /* x*5 */
+    height: 24px; /* x*3 */
+    border-radius: 16px; /* x*2 */
+    background: #fff;
+    border: 1px solid #d9d9d9;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+input[type="checkbox"].ios8-switch + label:after {
+    content: "";
+    position: absolute;
+    display: block;
+    left: 0px;
+    top: 0px;
+    width: 24px; /* x*3 */
+    height: 24px; /* x*3 */
+    border-radius: 16px; /* x*2 */
+    background: #fff;
+    border: 1px solid #d9d9d9;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+input[type="checkbox"].ios8-switch + label:hover:after {
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+input[type="checkbox"].ios8-switch:checked + label:after {
+    margin-left: 16px;
+}
+
+input[type="checkbox"].ios8-switch:checked + label:before {
+    background: #55D069;
+}
+
+input[type="checkbox"].ios8-switch-sm {
+    margin: 5px 0 0 10px;
+}
+
+input[type="checkbox"].ios8-switch-sm + label {
+    position: relative;
+    padding: 0 0 0 32px;
+    line-height: 1.3em;
+}
+
+input[type="checkbox"].ios8-switch-sm + label:before {
+    width: 25px; /* x*5 */
+    height: 15px; /* x*3 */
+    border-radius: 10px; /* x*2 */
+}
+
+input[type="checkbox"].ios8-switch-sm + label:after {
+    width: 15px; /* x*3 */
+    height: 15px; /* x*3 */
+    border-radius: 10px; /* x*2 */
+}
+
+input[type="checkbox"].ios8-switch-sm + label:hover:after {
+    box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+
+input[type="checkbox"].ios8-switch-sm:checked + label:after {
+    margin-left: 10px; /* x*2 */
+}
+
+input[type="checkbox"].ios8-switch-lg {
+    margin: 10px 0 0 20px;
+}
+
+input[type="checkbox"].ios8-switch-lg + label {
+    position: relative;
+    padding: 7px 0 0 60px;
+    line-height: 2.3em;
+}
+
+input[type="checkbox"].ios8-switch-lg + label:before {
+    width: 50px; /* x*5 */
+    height: 30px; /* x*3 */
+    border-radius: 20px; /* x*2 */
+}
+
+input[type="checkbox"].ios8-switch-lg + label:after {
+    width: 30px; /* x*3 */
+    height: 30px; /* x*3 */
+    border-radius: 20px; /* x*2 */
+}
+
+input[type="checkbox"].ios8-switch-lg + label:hover:after {
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
+}
+
+input[type="checkbox"].ios8-switch-lg:checked + label:after {
+    margin-left: 20px; /* x*2 */
+}

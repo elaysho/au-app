@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+
+    <!-- Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
+
+    <title>AU APP</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/sf-ui-text-2" rel="stylesheet">
+    <!-- <link href="https://cdn.jsdelivr.net/gh/mailtoharshit/San-Francisco-Font-/sanfrancisco.css" rel="stylesheet"> -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.0/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="assets/css/custom.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+
+    <script src="assets/js/au-app.js"></script>
+    <script src="assets/js/index.js"></script>
+</head>
+<body>
+    <div class="xl:container xl:mx-auto sm:w-screen h-screen flex justify-center items-center">
+        <div class="mockup-phone self-center py-2">
+            <!-- Screen -->
+            <div class="screen">
+                <!-- Navbar -->
+                <div class="camera"></div> 
+                <div class="iphone-navbar">
+                    <div class="flex justify-between items-center">
+                        <div class="time font-medium pl-10"></div>
+                        <div class="signal-wifi-battery"><img src="assets/imgs/iphone/navbar/Signal-Wifi-Battery-Light-4x.png"></div>
+                    </div>
+                </div>
+
+                <div class="apps display">
+                    <!-- Homescreen -->
+                    <section id="homescreen" class="artboard artboard-demo phone-4 flex flex-col justify-end homescreen iOS-gradient-1 active">
+                        <div class="navbar-space"></div>
+
+                        <!-- App Grid -->
+                        <div class="w-80 h-80 mx-auto pt-3 grow flex flex-col justify-end">
+                            <!-- Apps Grid -->
+                            <div class="w-full h-full grow grid grid-cols-4 grid-rows-6 gap-4">
+                                <!-- Calendar Widget -->
+                                <div class="flex flex-col col-span-2 row-span-2 justify-end items-center px-1">
+                                    <div class="w-full h-full bg-gray-900 rounded-3xl my-1 flex flex-col justify-center items-center">
+                                        <div class="flex justify-between items-center">
+                                            <span class="calendar-day text-red-500 mr-1"></span>
+                                            <span class="calendar-month text-gray-500"></span>
+                                        </div>
+                                        <span class="calendar-date text-white p-0"></span>
+                                    </div>
+                                    <span class="app-name mt-1">Calendar</span>
+                                </div>
+
+                                <div class="app-icon flex flex-col justify-center items-center px-1" data-screen-id="contacts-app">
+                                    <img src="assets/imgs/iphone/icons/contacts.svg">
+                                    <span class="app-name mt-1">Contacts</span>
+                                </div>
+                                <div class="app-icon flex flex-col justify-center items-center px-1" data-screen-id="">
+                                    <img src="assets/imgs/iphone/icons/camera.svg">
+                                    <span class="app-name mt-1">Camera</span>
+                                </div>
+                                <div class="app-icon flex flex-col justify-center items-center px-1" data-screen-id="">
+                                    <img src="assets/imgs/iphone/icons/photos.svg">
+                                    <span class="app-name mt-1">Photos</span>
+                                </div>
+                                <div class="app-icon flex flex-col justify-center items-center px-1" data-screen-id="">
+                                    <img src="assets/imgs/iphone/icons/settings.svg">
+                                    <span class="app-name mt-1">Settings</span>
+                                </div>
+                            </div>
+
+                            <!-- Search -->
+                            <div class="my-2 flex justify-center items-center">
+                                <div class="search py-2 px-4 bg-gray-100 bg-opacity-25 rounded-2xl flex justify-between items-center">
+                                    <i data-feather="search" class="mr-1"></i>Search
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dock -->
+                        <div class="dock flex justify-center items-center my-5">
+                            <div class="w-80 h-full grid grid-cols-4 gap-4 p-3">
+                                <div class="app-icon flex justify-center items-center" data-screen-id="">
+                                    <img src="assets/imgs/iphone/icons/phone.png">
+                                </div>
+                                <div class="app-icon flex justify-center items-center" data-screen-id="">
+                                    <img src="assets/imgs/iphone/icons/safari.svg">
+                                </div>
+                                <div class="app-icon flex justify-center items-center" data-screen-id="messages-app--home">
+                                    <img src="assets/imgs/iphone/icons/iosmessage.svg">
+                                </div>
+                                <div class="app-icon flex justify-center items-center" data-screen-id="">
+                                    <img src="assets/imgs/iphone/icons/itunes.svg">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Contacts -->
+                    <section id="contacts-app" class="artboard artboard-demo phone-4 flex flex-col justify-end app-background contacts-app hidden">
+                        <div class="navbar-space flex flex-col justify-end">
+                            <div class="flex justify-between items-center ios-primary-color">
+                                <span class="app-icon flex justify-between items-center" data-screen-id="homescreen"> <i data-feather="chevron-left" class="ml-1"></i> Home </span>
+                                <span class="app-icon" data-screen-id="contacts-app--add-new"> <i data-feather="plus" class="mr-2"></i> </span> 
+                            </div>
+                            <div class="px-4">
+                                <div class="text-3xl font-semibold">Contacts</div>
+                                <!-- <div class="w-full mx-auto">
+                                    <input type="text" placeholder="Search" class="input input-sm w-full app-search bg-opacity-25" />
+                                </div> -->
+                                <div class="contacts-search-container grow w-full flex items-center rounded-lg border border-solid app-search bg-opacity-25">
+                                    <div class="contacts-search-btns ml-1">
+                                        <div id="send-audio-message-btn" class="send-audio-message-btn w-6 h-6 rounded-full bg-transparent flex justify-center items-center"> <i data-feather="search" class="text-gray-400"></i> </div>
+                                    </div>
+                                    <input id="contacts-search" placeholder="Search" class="contacts-search input input-sm grow rounded-md bg-transparent font-light px-0 pt-1">
+                                    <div class="contacts-search-btns mr-1">
+                                        <div id="send-audio-message-btn" class="send-audio-message-btn w-6 h-6 rounded-full bg-transparent flex justify-center items-center"> <i data-feather="mic" class="text-gray-400"></i> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full h-80 bg-white mt-3 grow flex flex-col px-4 contacts-body">
+                            <div class="owner-card grid grid-cols-4 gap-3 items-center mt-2 mb-5 hidden">
+                                <div class="contacts-icon">
+                                    <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                </div>
+                                <div class="col-span-3 flex-col justify-center">
+                                    <div class="contact-name text-lg font-semibold"> Owner's Name </div>
+                                    <div class="text-sm text-gray-400"> My Card </div>
+                                </div>
+                            </div>
+                            <ol class="contacts-list">
+                                <li class="header py-3 clone-item hidden"> A </li>
+                                <li class="contact-name py-3 clone-item hidden"> AU Character 1 </li>
+                            </ol>
+
+                            <div class="contact-list-empty bg-transparent text-center py-10 hidden">
+                                There are no contacts to display.
+                            </div>
+                        </div>
+
+                        <!-- Home Indicator -->
+                        <div class="app-icon w-full h-10 flex justify-end items-end bg-white" data-screen-id="homescreen">
+                            <div class="w-40 mx-auto mb-2">
+                                <img src="assets/imgs/iphone/homescreen/Home-Indicator.png">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Contacts - New -->
+                    <div id="contacts-app--add-new" class="overlays artboard phone-4 h-full flex flex-col justify-end items-center hidden" data-close-onclick="false">
+                        <div class="new-contacts-wrapper bg-gray-100 w-full flex flex-col">
+                            <div class="navbar-space text-lg">
+                                <div class="bg-white flex justify-between items-center py-2 ios-primary-color">
+                                    <button class="app-icon flex justify-between items-center" data-screen-id="contacts-app"> <i data-feather="chevron-left" class="ml-1"></i> </button>
+                                    <span class="text-black font-semibold ml-8"> New Contact </span>
+                                    <span class="new-contact-save-btn ml-1 mr-3"> Save </span> 
+                                </div>
+                            </div>
+
+                            <div class="new-contact-form w-full flex flex-col contacts-body justify-self-end">
+                                <div class="photo-container w-full flex flex-col justify-center items-center mb-5">
+                                    <div class="contacts-icon">
+                                        <img id="new-contact-photo-preview" class="" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                    </div>
+                                    <!-- <form>
+                                        <label for="upload-contact-photo" class="btn btn-sm mt-3 bg-gray-300">Add Photo</label>
+                                        <input type="file" name="photo" id="upload-contact-photo" />
+                                    </form> -->
+                                </div>
+                                <div class="w-full mx-0 join join-vertical rounded-none">
+                                    <div class="w-full join flex">
+                                        <input id="contact-photo" type="text" class="input grow join-item new-contact-form-input" name="contact-photo" placeholder="Contact Photo Link">
+                                        <button class="btn-preview-photo btn join-item" data-photo-input="contact-photo" data-photo-preview="new-contact-photo-preview">Preview</button>
+                                    </div>
+                                    <input type="text" class="input join-item new-contact-form-input" name="first-name" placeholder="First Name">
+                                    <input type="text" class="input join-item new-contact-form-input" name="last-name" placeholder="Last name">
+                                    <input type="text" class="input join-item new-contact-form-input" name="nickname" placeholder="Nickname">
+                                </div>
+
+                                <div class="w-full flex flex-col mt-5 px-3">
+                                    <label>Is this your main account?</label>
+                                    <select class="main-account-select select select-bordered w-full new-contact-form-input" name="main-account">
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                    </select>
+                                </div>
+
+                                <!-- <div class="w-full flex justify-between items-center mt-3 mx-3">
+                                    <div class="main-account-checkbox">
+                                        <input id="main-account" type="checkbox" name="main-account" class="ios8-switch ios8-switch-lg">
+                                        <label for="main-account">Main Account</label>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Messages -->
+                    <!-- Messages - Message Thread -->
+                    <section id="messages-app--msg" class="artboard artboard-demo phone-4 flex flex-col justify-end app-background messages-app--msg hidden">
+                        <div class="w-full navbar-space flex flex-col justify-end bg-opacity-50">
+                            <div class="w-full app-background">
+                                <div class="grid grid-cols-3 gap-3">
+                                    <span id="close-message-btn" class="app-icon close-message-btn flex justify-between items-center ios-primary-color" data-screen-id="messages-app--home"> <i data-feather="chevron-left" class="ml-1"></i> </span>
+                                    <div class="w-full flex flex-row justify-center">
+                                        <div class="contacts-icon">
+                                            <img class="self-center" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                        </div>
+                                    </div>
+                                    <span class="flex justify-end items-center ios-primary-color"> <i data-feather="video" class="mr-2"></i> </span>
+                                </div>
+                                <span class="message-name text-xs font-light mx-auto mt-1 mb-2 flex justify-center items-center"> 
+                                    <span class="ml-1">Noah</span> <i data-feather="chevron-right" class=""></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="w-full h-80 bg-white grow flex flex-col justify-end">
+                            <!-- Message Body -->
+                            <div class="message-body h-full px-4 pt-2 flex flex-col justify-start font-light" data-overlay-id="messages-app--msg-tapback">
+                                <div class="stacked-messages stacked-messages-from-them flex flex-col flex-start clone-item hidden"></div>
+                                <div class="stacked-messages stacked-messages-from-me flex flex-col flex-end clone-item hidden"></div>
+                            </div>
+
+                            <!-- Message Text Field -->
+                            <div class="message-input flex items-center my-1 px-4">                                
+                                <p id="sender-switcher" class="sender-switcher w-6 h-6 from-me hidden mr-3" data-sender="from-me" title="you're the sender"> </p>
+                                <div class="overlay-btn message-options-btn" data-overlay-id="messages-app--msg-options">
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex justify-center items-center"> <i data-feather="plus" class=""></i> </div>
+                                </div>
+                                <div class="message-textfield-container grow w-full flex items-center rounded-full border border-solid ml-2">
+                                    <textarea id="message-textfield" placeholder="iMessage" class="message-textfield input input-sm grow rounded-full bg-transparent font-light pt-1"></textarea>
+                                    <div class="message-textfield-btns mr-1">
+                                        <div id="send-message-btn" class="send-message-btn w-6 h-6 rounded-full bg-gray-200 flex justify-center items-center hidden"> <i data-feather="arrow-up" class=""></i> </div>
+                                        <div id="send-audio-message-btn" class="send-audio-message-btn w-6 h-6 rounded-full bg-transparent flex justify-center items-center"> <i data-feather="mic" class="text-gray-400"></i> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="keyboard-container" class="keyboard-container w-full bg-gray-100 hidden">
+                            <div id="keyboard" class="filer blur-sm" data-keyboard-state="down">
+                                <div class="row">
+                                    <div class="key">Q</div>
+                                    <div class="key">W</div>
+                                    <div class="key">E</div>
+                                    <div class="key">R</div>
+                                    <div class="key">T</div>
+                                    <div class="key">Y</div>
+                                    <div class="key">U</div>
+                                    <div class="key">I</div>
+                                    <div class="key">O</div>
+                                    <div class="key">P</div>
+                                </div>
+                                <div class="row">
+                                    <div class="key">A</div>
+                                    <div class="key">S</div>
+                                    <div class="key">D</div>
+                                    <div class="key">F</div>
+                                    <div class="key">G</div>
+                                    <div class="key">H</div>
+                                    <div class="key">J</div>
+                                    <div class="key">K</div>
+                                    <div class="key">L</div>
+                                </div>
+                                <div class="row">
+                                    <div class="key font-light text-lg system_key" style="width: 2.25em; height: 2em;">⌂</div>
+                                    <div class="key">Z</div>
+                                    <div class="key">X</div>
+                                    <div class="key">C</div>
+                                    <div class="key">V</div>
+                                    <div class="key">B</div>
+                                    <div class="key">N</div>
+                                    <div class="key">M</div>
+                                    <div class="key font-light text-lg system_key" style="width: 2.25em; height: 2em;">⌫</div>
+                                </div>
+                                <div class="row">
+                                    <div class="key font-light text-lg system_key" style="width: 2.25em">123</div>
+                                    <div class="key font-light text-lg system_key" style="width: 2.25em">👀</div>
+                                    <div class="key font-light text-lg" style="width: 10.5em; color: #71717D;">space</div>
+                                    <div class="key font-light text-lg system_key" style="width: 4em">return</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Home Indicator -->
+                        <div class="app-icon w-full h-10 flex justify-end items-end bg-white" data-screen-id="homescreen">
+                            <div class="w-40 mx-auto mb-2">
+                                <img src="assets/imgs/iphone/homescreen/Home-Indicator.png">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Messages - Message List -->
+                    <section id="messages-app--home" class="artboard artboard-demo phone-4 flex flex-col justify-end app-background messages-app--home hidden">
+                        <div class="navbar-space text-lg flex flex-col justify-end">
+                            <div class="flex justify-between items-center ios-primary-color">
+                                <span class="app-icon flex justify-between items-center" data-screen-id="homescreen"> <i data-feather="chevron-left" class="ml-1"></i> Home </span>
+                                <span class="text-black font-semibold mr-10"> Messages </span>
+                                <span class="new-message-btn overlay-btn" data-overlay-id="messages-app--new-msg-actionsheet"> <i data-feather="edit" class="mr-2"></i> </span> 
+                            </div>
+                        </div>
+
+                        <div class="w-full h-80 bg-white mt-3 grow flex flex-col px-4 contacts-body">
+                            <!-- Pin Messages -->
+                            <div class="pin-messages grid grid-cols-3 gap-3 mt-3 mb-5">
+                                <div class="pin-message flex flex-col justify-center items-center">
+                                    <div class="contacts-icon">
+                                        <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                    </div>
+                                    <span class="contact-name text-sm text-gray-500 mt-1">Noah</span>
+                                </div>
+
+                                <div class="pin-message flex flex-col justify-center items-center">
+                                    <div class="contacts-icon">
+                                        <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                    </div>
+                                    <span class="contact-name text-sm text-gray-500 mt-1">Noah</span>
+                                </div>
+
+                                <div class="pin-message flex flex-col justify-center items-center">
+                                    <div class="contacts-icon">
+                                        <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                    </div>
+                                    <span class="contact-name text-sm text-gray-500 mt-1">Noah</span>
+                                </div>
+                            </div>
+
+                            <!-- Messages List-->
+                            <ol class="messages-list px-2">
+                                <li class="message py-3 flex items-start gap-3 clone-item hidden">
+                                    <div class="flex justify-start items-center">
+                                        <div class="contacts-icon">
+                                            <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                        </div>
+                                    </div>
+                                    <div class="col-span-2 grow flex flex-col justify-start">
+                                        <span class="contact-name text-lg font-semibold"> Noah </span>
+                                        <span class="message-preview text-sm font-light text-gray-400 mt-0 pt-0"> Message Preview </span>
+                                    </div>
+                                    <div class="message-date text-sm mt-1 font-light text-gray-400 flex justify-end">
+                                        <span class="date">9:41 PM</span> <i data-feather="chevron-right" class="ml-1"></i>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+
+                        <!-- Home Indicator -->
+                        <div class="app-icon w-full h-10 flex justify-end items-end bg-white" data-screen-id="homescreen">
+                            <div class="w-40 mx-auto mb-2">
+                                <img src="assets/imgs/iphone/homescreen/Home-Indicator.png">
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Overlays -->
+            <div class="overlays-container bg-opacity-0 w-full h-full flex justify-center items-center hidden">             
+                <!-- Messages -->
+                <div id="messages-app--new-msg-actionsheet" class="overlays artboard phone-4 flex flex-col justify-end items-center hidden">
+                    <div class="w-full h-10 px-3 mb-10 flex flex-col justify-end">
+                        <div class="join join-vertical mb-2">
+                            <button class="overlay-btn btn btn-block bg-white bg-opacity-70 text-lg font-light ios-primary-color join-item" data-overlay-id="messages-app--new-msg-options">Chat</button>
+                            <button class="overlay-btn btn btn-block bg-white bg-opacity-70 text-lg font-light ios-primary-color join-item" disabled>Group</button>
+                        </div>
+                        <button class="hide-overlay-btn btn btn-block bg-white text-lg font-medium ios-primary-color" data-overlay-id="messages-app--new-msg-actionsheet">Cancel</button>
+                    </div>
+                </div>
+                <div id="messages-app--new-msg-options" class="overlays artboard phone-4 h-full flex flex-col justify-end items-center hidden" data-close-onclick="false">
+                    <div class="new-msg-options-wrapper bg-gray-100 w-full flex flex-col">
+                        <div class="navbar-space text-lg">
+                            <div class="bg-white flex justify-between items-center py-2 ios-primary-color">
+                                <button class="hide-overlay-btn flex justify-between items-center" data-overlay-id="messages-app--new-msg-options"> <i data-feather="chevron-left" class="ml-1"></i> </button>
+                                <span class="text-black font-semibold mr-3"> New Message </span>
+                                <span> &nbsp;&nbsp;&nbsp; </span> 
+                            </div>
+                        </div>
+
+                        <div class="new-msg-options w-full flex flex-col mt-10 contacts-body justify-self-end">
+                            <ol class="contacts-list bg-white px-4">
+                                <li class="new-msg-contact py-3 flex items-center clone-item hidden" data-contact-id=""> 
+                                    <div class="contacts-icon"> <img class="" src="assets/imgs/iphone/contacts/sample-icon.png"> </div>
+                                    <span class="contact-name grow ml-2">AU Character 1</span> 
+                                </li>
+                            </ol>
+                            <div class="contact-list-empty bg-transparent text-center py-10 hidden">
+                                There are no contacts to display.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="messages-app--msg-tapback" class="overlays artboard phone-4 flex flex-col justify-end hidden">
+                    <div class="w-full navbar-space flex flex-col justify-end bg-opacity-0"></div>
+
+                    <div class="w-full h-80 grow flex flex-col justify-end">
+                        <!-- Message Body -->
+                        <div class="react-components hidden">
+                            <div class="from-me-react-bbl px-5">
+                                <img class="" src="assets/imgs/iphone/messages/me-react-icons-light.png">
+                            </div>
+                            <div class="from-them-react-bbl px-5">
+                                <img class="" src="assets/imgs/iphone/messages/them-react-icons-light.png">
+                            </div>
+                        </div>
+
+                        <div class="message-body h-full px-4 flex flex-col justify-start font-light"></div>
+
+                        <!-- Message Text Field -->
+                        <div class="message-input flex justify-center items-center my-1 px-4">
+                            <button class="hide-overlay-btn btn btn-sm ios-primary-color" data-overlay-id="messages-app--msg-tapback"> 
+                                <i data-feather="x" class=""></i> Close
+                            </button>
+                            <!-- <button class="hide-overlay-btn w-8 h-8 rounded-sm bg-gray-200 flex justify-center items-center" data-overlay-id="messages-app--msg-tapback">
+                                <i data-feather="x" class=""></i> Close
+                            </button> -->
+                        </div>
+                    </div>
+                    <!-- Home Indicator -->
+                    <div class="app-icon w-full h-10 flex justify-end items-end bg-white" data-screen-id="homescreen">
+                        <div class="w-40 mx-auto mb-2">
+                            <img src="assets/imgs/iphone/homescreen/Home-Indicator.png">
+                        </div>
+                    </div>
+                </div>
+                <div id="messages-app--msg-options" class="overlays artboard phone-4 flex flex-col justify-end hidden"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
