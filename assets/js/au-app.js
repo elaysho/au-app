@@ -12,6 +12,17 @@ var auapp = (function(){
         return check;
     }
 
+    function checkPhoneSize() {
+        let defaultSize = 'phone-4';
+
+        let params = new URLSearchParams(location.search);
+        let phoneSize = params.get('phone-size');
+
+        if(phoneSize != null && (['phone-2', 'phone-3', 'phone-5']).includes(phoneSize)) {
+            $(`.${defaultSize}`).addClass(phoneSize).removeClass(defaultSize);
+        }
+    }
+
     function displayTime() {
         let time = (new Date()).toLocaleTimeString(undefined, {
             hour:   '2-digit',
@@ -116,32 +127,6 @@ var auapp = (function(){
 
             $(`#${overlayId}`).removeClass('hidden');
             $(`#${overlayId}`).addClass('active');
-        }
-
-        switch(overlayId) {
-            case 'contacts-app--add-new':
-                // setTimeout(function() {
-                //     let checkboxParent = $('#contacts-app--add-new').find('.main-account-checkbox').parent();
-                //     $('#contacts-app--add-new').find('.main-account-checkbox').remove();
-
-                //     $(checkboxParent).append(`
-                //         <div class="main-account-checkbox">
-                //             <input id="main-account" type="checkbox" name="main-account" class="ios8-switch ios8-switch-lg">
-                //             <label for="main-account">Main Account</label>
-                //         </div>
-                //     `);
-                //     $(checkboxParent).append(`<input id="main-account" type="checkbox" class="checkbox" />`);
-                // }, 3000);
-
-                // let contactUploadParent = $('#contacts-app--add-new .photo-container');
-                // let contactUpload = `
-                //     <form method="post" enctype="multipart/form-data">
-                //         <label for="upload-contact-photo" class="btn btn-sm mt-3 bg-gray-300">Add Photo</label>
-                //         <input type="file" name="photo" id="upload-contact-photo" />
-                //     </form>`;
-
-                // $(contactUploadParent).append(contactUpload);
-            break;
         }
     }
 
@@ -857,6 +842,9 @@ var auapp = (function(){
         posX = (event.pageX - posX);
         posY = (event.pageY - posY);
 
+        console.log(posX, posY);
+        console.log(event);
+
         let reactCoordinates = {
             'from-me': {
                 'heart': {
@@ -914,6 +902,9 @@ var auapp = (function(){
 
         let reactFrom = $(this).data('chat-react-from');
         $.each(reactCoordinates[message['sender']] ?? '', function(react, coordinates) {
+            console.log(posX >= coordinates.left);
+            console.log(posX <= coordinates.right);
+
             if(posX >= coordinates.left && posX <= coordinates.right) {
                 // 1: sender: from-me = your own chat bubble
                 // 2: sender: from-them = their chat bubble
@@ -1070,6 +1061,7 @@ var auapp = (function(){
         displayDate();
         dateInterval = setInterval(displayDate, 43200000);
 
+        checkPhoneSize();
         checkCurrentPage();
         bindEvents();
     }
