@@ -308,6 +308,7 @@ var auapp = (function(){
 
                 $('.new-msg-options .contacts-list').append(contactElem);
                 $(contactElem).attr('data-contact-id', contact['contact-id']);
+                $(contactElem).on('click', openMessageThread);
 
                 // Contacts
                 let contactHeader = $('.contacts-app .contacts-list .header.clone-item').clone();
