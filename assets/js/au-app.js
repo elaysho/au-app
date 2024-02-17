@@ -18,7 +18,7 @@ var auapp = (function(){
         let params = new URLSearchParams(location.search);
         let phoneSize = params.get('phone-size');
 
-        if(phoneSize != null && (['phone-2', 'phone-3', 'phone-5']).includes(phoneSize)) {
+        if(phoneSize != null && (['phone-1', 'phone-2', 'phone-3', 'phone-5']).includes(phoneSize)) {
             $(`.${defaultSize}`).addClass(phoneSize).removeClass(defaultSize);
         }
 

@@ -24,6 +24,15 @@ body {
     width: 380px!important;
 }
 
+.artboard.phone-1 {
+    width: unset!important;
+}
+
+.overlays.phone-1 {
+    width: 370px!important;
+}
+
+
 .mockup-phone {
     display: inline-block;
     border: 1px #000 solid;
