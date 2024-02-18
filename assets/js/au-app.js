@@ -85,6 +85,12 @@ var auapp = (function(){
                 displayContacts();
             break;
             case 'messages-app--msg':
+                // Open message if there's a message id param
+                // let messageId = getSearchParamsValue('message-id');
+                // if(messageId !== null) {
+                //     openMessageThread(messageId);
+                // }
+
                 $('.message-body').scrollTop($('.message-body')[0].scrollHeight);
                 checkMessageTextFieldHeight();
             break;
@@ -111,12 +117,16 @@ var auapp = (function(){
     }
 
     function checkCurrentPage() {
-        let params = new URLSearchParams(location.search);
-        let screen = params.get('screen');
+        let screen = getSearchParamsValue('screen');
 
         if(screen != null) {
             switchApp(screen);
         }
+    }
+
+    function getSearchParamsValue(param) {
+        let params = new URLSearchParams(location.search);
+        return params.get(param);
     }
 
     // Overlays
@@ -200,6 +210,8 @@ var auapp = (function(){
     }
 
     function overlaySwitcher(event) {
+        console.log($(this));
+
         showOverlay(null, $(this));
     }
 
@@ -298,7 +310,7 @@ var auapp = (function(){
 
                 $('.new-msg-options .contacts-list').append(contactElem);
                 $(contactElem).attr('data-contact-id', contact['contact-id']);
-                $(contactElem).on('click', openMessageThread);
+                $(contactElem).on('click', onClickOfMessageThread);
 
                 // Contacts
                 let contactHeader = $('.contacts-app .contacts-list .header.clone-item').clone();
@@ -402,7 +414,7 @@ var auapp = (function(){
         let contactPhotoLink    = $(`#${contactPhotoInputId}`).val();
 
         let contactPhotoPrevId  = $(this).data('photo-preview');
-        let contactPhotoPrev    = $(`#${contactPhotoPrevId}`).attr('src', contactPhotoLink);
+        $(`#${contactPhotoPrevId}`).attr('src', contactPhotoLink);
     }
 
     // Messages
@@ -412,7 +424,11 @@ var auapp = (function(){
 
         let messageBody     = $('#messages-app--msg .message-body').clone();
         let reactComponents = $('#messages-app--msg-tapback .message-body').parent().find('.react-components').clone();
+        let options         = $('#messages-app--msg-tapback .tapback-options').parent().clone();
+
         $('#messages-app--msg-tapback .message-body').html('');
+        $('#messages-app--msg-tapback .message-body').append(options);
+        $('#messages-app--msg-tapback .message-body').find('.overlay-btn').on('click', overlaySwitcher);
 
         let reactId     = message['sender'];
         let reactBubble = $(reactComponents).find(`.${reactId}-react-bbl`);
@@ -423,75 +439,67 @@ var auapp = (function(){
 
             $.each($(stackedMessages).children(), function(j, child) {
                 let reactWrapper = null;
+                let reactImg     = null;
+
                 if($(child).hasClass('react-wrapper')) {
                     reactWrapper = child;
-                    child = $(reactWrapper).find('p');
+                    child        = $(reactWrapper).find('p');
+                    reactImg     = $(reactWrapper).find('img');
                 }
-
-                console.log(reactWrapper, child);
 
                 if($(child).data('chat-id') !== chatId) {
-                    $(child).addClass('no-tail');
-                    $(child).attr('style', 'background-color: transparent!important;');
-                    $(child).html('&nbsp;');
-                } else {
-                    $(child).removeClass('no-tail');
+                    return;
                 }
 
+                if($(child).hasClass('react-wrapper')) {
+                    reactWrapper = child;
+                    child        = $(reactWrapper).find('p');
+                    reactImg     = $(reactWrapper).find('img');
+                }
+
+                $(child).removeClass('no-tail');
+                
+                // Used to wrap the react bubble
                 let childWrapper = $('<div class="react-bbl-wrapper w-full flex justify-start"></div>');
                 if(message['sender'] == 'from-me') {
                     childWrapper = $('<div class="react-bbl-wrapper w-full flex justify-end"></div>');
                 }
 
-                $(childWrapper).append(child);
+
+                // If chat bubble is currently clicked, enclose with a wrapper
                 if($(child).data('chat-id') == chatId) {
-                    $(cloneStack).append(childWrapper);
+                    if(reactWrapper != null) {
+                        $(reactWrapper).append(child);
+                        $(cloneStack).append(reactWrapper);
+                    } else {
+                        $(childWrapper).append(child);
+                        $(cloneStack).append(childWrapper);
+                    }
+
+                    $('#messages-app--msg-tapback').attr('data-current-chat-id', chatId);
+
+                    // Append clones stack on message to get position & height
+                    $('#messages-app--msg-tapback .message-body').prepend(cloneStack);
+
+                    // Fix alignment of dialog box base on sender of chat
+                    $('#messages-app--msg-tapback .tapback-options').parent().addClass('justify-end');
+                    if(message['sender'] == 'from-them') {
+                        $('#messages-app--msg-tapback .tapback-options').parent().removeClass('justify-end');
+                        $('#messages-app--msg-tapback .tapback-options').parent().addClass('justify-start');
+                    }
+
+                    // Add chat bubble to react selection overlay
+                    let chatPreview = $(reactWrapper ?? childWrapper).clone();
+                    $('#messages-app--msg-tapback-react .chat-bubble-container').html('');
+                    $('#messages-app--msg-tapback-react .chat-bubble-container').append(chatPreview);
+
+                    $('.react-select').attr('data-chat-id', chatId);
                 } else {
                     $(cloneStack).append(child);
                 }
-
-                if($(child).data('chat-id') == chatId) {
-                    // Append clones stack on message to get position & height
-                    $('#messages-app--msg-tapback .message-body').append(cloneStack);
-
-                    // Position of chat bubble
-                    let posX = $(child).position().left;
-                    let posY = $(child).position().top;
-                    console.log('posX: ' + posX);
-                    console.log('posY: ' + posY); 
-
-                    $('#messages-app--msg-tapback .message-body').scrollTop(posY);
-
-                    // Append react bubbles
-                    let height = $(child).innerHeight() + 8;
-                    $(reactBubble).attr('style', `margin-top: -${height}px!important;`);
-
-                    // User's react to current chat bubble
-                    $(reactBubble).attr('data-chat-id', chatId);
-                    $(reactBubble).attr('data-chat-react-from', 'from-me');
-                    $(reactBubble).prepend('<small class="font-semibold ios-primary-color"> React from You </small>');
-                    $(childWrapper).prepend(reactBubble);
-
-                    // The contact's react bubble
-                    let contactReactBubble = $(reactBubble).clone();
-                    height = height - 20;
-
-                    $(contactReactBubble).attr('style', `margin-top: ${height}px!important;`);
-                    $(contactReactBubble).addClass('flip-vertical');
-                    $(contactReactBubble).attr('data-chat-react-from', 'from-them');
-                    $(contactReactBubble).find('small').html('React from Them');
-                    $(childWrapper).append(contactReactBubble);
-                    
-                    // Add listeners
-                    $(reactBubble).on('click', updateChatBubbleReact);
-                    $(contactReactBubble).on('click', updateChatBubbleReact);
-
-                    // Remove clonestack
-                    $('#messages-app--msg-tapback .message-body').remove(cloneStack);
-                }
             });
 
-            $('#messages-app--msg-tapback .message-body').append(cloneStack);
+            // $('#messages-app--msg-tapback .message-body').append(cloneStack);
         });
     }
 
@@ -611,37 +619,42 @@ var auapp = (function(){
 
                 // Append to message list container
                 $(messageListContainer).append(messageList);
-                $(messageList).on('click', openMessageThread);
+                $(messageList).on('click', onClickOfMessageThread);
             }
         });
     }
 
-    function openMessageThread(event) {
+    function onClickOfMessageThread(event) {
+        let contactId = $(this).data('contact-id');
+        openMessageThread(contactId);
+    }
+
+    function openMessageThread(contactId) {
         let messages = localStorage.getItem('messages') ?? JSON.stringify({});
         messages = JSON.parse(messages);
 
-        let contactId = $(this).data('contact-id');
-        let contact   = getContactDetails(contactId);
-
+        let contact = getContactDetails(contactId);
         if(contact === null) {
             return;
         }
 
         let messageThread = messages[contactId] ?? null;
-        let messageIds = Object.keys(messages).map(Number.parseInt);
-        if(messageIds.includes(contactId) === false) {
+        if(messageThread == null) {
             messageThread = createMessageThread(contact, messages);
         }
         
         if(messageThread !== null) {
             let hideOverlayBtn = $('#messages-app--new-msg-options .hide-overlay-btn');
 
-            if(hideOverlayBtn[0] !== null) {
+            if(hideOverlayBtn[0] !== null && $('#messages-app--new-msg-options').hasClass('hidden') == false) {
                 $(hideOverlayBtn).click();
             }
 
             $('#messages-app--msg').attr('data-current-message-thread', contactId);
-            switchApp('messages-app--msg');
+            if(getSearchParamsValue('screen') !== 'messages-app--msg') {
+                switchApp('messages-app--msg');
+            }
+
             displayChatBubbles(messageThread);
 
             // Update header
@@ -825,8 +838,8 @@ var auapp = (function(){
 
     function repositionBubbleReact(bubble, bubbleElement, reactWrapper) {
         let reactIcon  = $(reactWrapper).find('.react-icon');
-        let width      = $(bubbleElement).innerWidth() - 20;
-        let height     = ($(bubbleElement).innerHeight() - $(reactIcon).innerHeight()) / 2;
+        let width      = $(bubbleElement).innerWidth() - 15;
+        let height     = ($(bubbleElement).innerHeight() - $(reactIcon).innerHeight()) / 3;
 
         if(bubble['sender'] == 'from-me') {
             $(reactIcon).attr('style', `right: ${width}px!important; top: -${height}px!important;`);
@@ -841,116 +854,54 @@ var auapp = (function(){
         let chatId  = $(this).data('chat-id');
         let message = getMessage(chatId);
 
-        var posX = $(this).position().left,
-            posY = $(this).position().top;
-
-        posX = (event.pageX - posX);
-        posY = (event.pageY - posY);
-
-        console.log(posX, posY);
-        console.log(event);
-
-        let reactCoordinates = {
-            'from-me': {
-                'heart': {
-                    left: 340,
-                    right: 364,
-                },
-                'like': {
-                    left: 385,
-                    right: 410,
-                },
-                'dislike': {
-                    left: 427,
-                    right: 451,
-                },
-                'haha': {
-                    left: 468,
-                    right: 496,
-                },
-                'emphasize': {
-                    left: 515,
-                    right: 535,
-                },
-                'question': {
-                    left: 555,
-                    right: 575,
-                }
-            },
-            'from-them': {
-                'heart': {
-                    left: 340,
-                    right: 364,
-                },
-                'like': {
-                    left: 385,
-                    right: 410,
-                },
-                'dislike': {
-                    left: 427,
-                    right: 451,
-                },
-                'haha': {
-                    left: 468,
-                    right: 496,
-                },
-                'emphasize': {
-                    left: 515,
-                    right: 535,
-                },
-                'question': {
-                    left: 555,
-                    right: 575,
-                }
-            }
-        };
-
         let reactFrom = $(this).data('chat-react-from');
-        $.each(reactCoordinates[message['sender']] ?? '', function(react, coordinates) {
-            console.log(posX >= coordinates.left);
-            console.log(posX <= coordinates.right);
+        let react     = $(this).data('react');
 
-            if(posX >= coordinates.left && posX <= coordinates.right) {
-                // 1: sender: from-me = your own chat bubble
-                // 2: sender: from-them = their chat bubble
-                // Will add an edit setting to display the react from the sender
-                message['reacts'][reactFrom] = react;
+        if($(this).hasClass('btn-remove-react') == false) {
+            message['reacts'][reactFrom] = react;
+        } else {
+            message['reacts']['from-me'] = null;
+            message['reacts']['from-them'] = null;
+        }
 
-                let messages  = localStorage.getItem('messages') ?? JSON.stringify({});
-                messages = JSON.parse(messages);
+        let messages  = localStorage.getItem('messages') ?? JSON.stringify({});
+        messages = JSON.parse(messages);
 
-                let messageThread = messages[message['message-thread-id']] ?? null;
-                messageThread['thread'][chatId] = message;
+        let messageThread = messages[message['message-thread-id']] ?? null;
+        messageThread['thread'][chatId] = message;
 
-                messages[message['message-thread-id']] = messageThread;
+        messages[message['message-thread-id']] = messageThread;
 
-                messages = JSON.stringify(messages);
-                localStorage.setItem('messages', messages);
+        messages = JSON.stringify(messages);
+        localStorage.setItem('messages', messages);
 
-                hideOverlayById('messages-app--msg-tapback');
+        hideOverlayById('messages-app--msg-tapback-react');
 
-                // Update chat bubble ui to display react
-                let bubbleElement = $('#messages-app--msg [data-chat-id="' + chatId + '"]').clone();
-                let bblWrapper    = $('#messages-app--msg [data-chat-id="' + chatId + '"]').parent();
+        // Update chat bubble ui to display react
+        let bubbleElement = $('#messages-app--msg [data-chat-id="' + chatId + '"]').clone();        
+        let bblWrapper    = $('#messages-app--msg [data-chat-id="' + chatId + '"]').parent();
 
-                if($(bblWrapper).hasClass('react-wrapper')) {
-                    bubbleElement = bubbleElement[1];
-                }
-
-                let reactWrapper  = displayBubbleReact(message, bubbleElement, react, reactFrom);
-
-                // Replace the current react wrapper
-                if($(bblWrapper).hasClass('react-wrapper')) {
-                    $(bblWrapper).replaceWith(reactWrapper);
-                } else {
-                    // Replace chat bubble with react wrapper
-                    $('#messages-app--msg [data-chat-id="' + chatId + '"]').replaceWith(reactWrapper);
-                }
-
-                repositionBubbleReact(message, bubbleElement, reactWrapper);
-                return false;
+        if($(this).hasClass('btn-remove-react') == false) {
+            if($(bblWrapper).hasClass('react-wrapper')) {
+                bubbleElement = bubbleElement[1];
             }
-        });
+
+            let reactWrapper  = displayBubbleReact(message, bubbleElement, react, reactFrom);
+
+            // Replace the current react wrapper
+            if($(bblWrapper).hasClass('react-wrapper')) {
+                $(bblWrapper).replaceWith(reactWrapper);
+            } else {
+                // Replace chat bubble with react wrapper
+                $('#messages-app--msg [data-chat-id="' + chatId + '"]').replaceWith(reactWrapper);
+            }
+
+            repositionBubbleReact(message, bubbleElement, reactWrapper);
+        } else {
+            if($(bblWrapper).hasClass('react-wrapper')) {
+                $(bblWrapper).replaceWith(bubbleElement[1]);
+            }
+        }
     }
 
     function getReactIcon(react, bubbleSender, reactFrom, systemTheme = 'light') {
@@ -1041,11 +992,12 @@ var auapp = (function(){
         $('.new-contact-save-btn').on('click', addNewContact);
         $('.btn-preview-photo').on('click', previewContactPhoto);
 
-        $('.new-msg-contact').on('click', openMessageThread);
+        $('.new-msg-contact').on('click', onClickOfMessageThread);
         $('.message-textfield').on('focus', onMessageTextFieldFocus);
         $('.message-textfield').on('focusout', onMessageTextFieldFocusOut);
         $('.sender-switcher').on('click', messagesSenderSwitcher);
         $('.send-message-btn').on('click', sendMessage);
+        $('.react-select').on('click', updateChatBubbleReact);
 
         $(document).click(function(event) {
             if($(event.target).hasClass('from-them') || $(event.target).hasClass('from-me')) {

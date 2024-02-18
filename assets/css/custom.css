@@ -20,22 +20,38 @@ body {
     background-color: white!important;
 }
 
+.artboard.phone-1 {
+    width: unset!important;
+}
+
+.artboard.phone-2 {
+    width: 374px;
+    height: 612px;
+}
+
 .artboard.phone-4 {
     width: 380px!important;
 }
 
-.artboard.phone-1 {
-    width: unset!important;
+.phone-1 .grid-rows-6 {
+    grid-template-rows: repeat(4, minmax(0, 1fr))!important;
+}
+
+.phone-2 .grid-rows-6 {
+    grid-template-rows: repeat(4, minmax(0, 1fr))!important;
+}
+
+.phone-3 .grid-rows-6 {
+    grid-template-rows: repeat(5, minmax(0, 1fr))!important;
 }
 
 .overlays.phone-1 {
     width: 370px!important;
 }
 
-
 .mockup-phone {
     display: inline-block;
-    border: 1px #000 solid;
+    border: unset!important;
     border-radius: unset!important;
     background-color: unset!important;
     padding: unset!important;
@@ -552,7 +568,7 @@ p[class^="from-"].emoji::before {
 .from-me-react-bbl img,
 .from-them-react-bbl img {
     object-fit: contain!important;
-    margin-top: -10px!important;
+    margin-top: 10px!important;
 }
 
 .from-me-react-bbl small,
