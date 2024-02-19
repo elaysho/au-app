@@ -1181,21 +1181,8 @@ var auapp = (function(){
 
         $('#screen').find(exportBtnId).remove();
 
-        // html2canvas($("#screen")[0], {
-        //     onrendered: function(canvas) {
-        //         theCanvas = canvas;
-        //         console.log(canvas);
-
-        //         canvas.toBlob(function(blob) {
-        //             saveAs(blob, "export.png"); 
-        //         });
-        //     }
-        // });
-
         html2canvas(document.querySelector("#screen")).then(canvas => {
-            console.log(canvas);
-            
-            canvas.toBlob(function(blob) {
+            canvas.toBlobHD(function(blob) {
                 saveAs(blob, "export.png"); 
             });
         });
