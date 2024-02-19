@@ -218,7 +218,7 @@
                                             <img class="self-center" src="assets/imgs/iphone/contacts/sample-icon.png">
                                         </div>
                                     </div>
-                                    <span class="flex justify-end items-center ios-primary-color"> <i data-feather="video" class="mr-2"></i> </span>
+                                    <span class="flex justify-end items-center ios-primary-color"> <i data-feather="video" class="mr-4"></i> </span>
                                 </div>
                                 <span class="message-name text-xs font-light mx-auto mt-1 mb-2 flex justify-center items-center"> 
                                     <span class="ml-1">Noah</span> <i data-feather="chevron-right" class=""></i>
@@ -345,12 +345,14 @@
                                             <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
                                         </div>
                                     </div>
-                                    <div class="col-span-2 grow flex flex-col justify-start">
-                                        <span class="contact-name text-lg font-semibold"> Noah </span>
-                                        <span class="message-preview text-sm font-light text-gray-400 mt-0 pt-0"> Message Preview </span>
-                                    </div>
-                                    <div class="message-date text-sm mt-1 font-light text-gray-400 flex justify-end">
-                                        <span class="date">9:41 PM</span> <i data-feather="chevron-right" class="ml-1"></i>
+                                    <div class="grow flex flex-col justify-start">
+                                        <div class="flex">
+                                            <span class="contact-name text-lg font-semibold grow"> Noah </span>
+                                            <div class="message-date text-sm mt-1 font-light text-gray-400 flex justify-end">
+                                                <span class="date">9:41 PM</span> <i data-feather="chevron-right" class="ml-1"></i>
+                                            </div>
+                                        </div>
+                                        <span class="message-preview text-sm text-gray-400 mt-0 pt-0"> Message Preview </span>
                                     </div>
                                 </li>
                             </ol>
@@ -428,19 +430,13 @@
                         </div>
 
                         <!-- Message Text Field -->
-                        <div class="message-input flex justify-center items-center my-1 px-4">
+                        <div class="message-input flex justify-center items-center my-5 px-4">
                             <button class="hide-overlay-btn btn btn-sm ios-primary-color" data-overlay-id="messages-app--msg-tapback"> 
                                 <i data-feather="x" class=""></i> Close
                             </button>
                             <!-- <button class="hide-overlay-btn w-8 h-8 rounded-sm bg-gray-200 flex justify-center items-center" data-overlay-id="messages-app--msg-tapback">
                                 <i data-feather="x" class=""></i> Close
                             </button> -->
-                        </div>
-                    </div>
-                    <!-- Home Indicator -->
-                    <div class="app-icon w-full h-10 flex justify-end items-end bg-white" data-screen-id="homescreen">
-                        <div class="w-40 mx-auto mb-2">
-                            <img src="assets/imgs/iphone/homescreen/Home-Indicator.png">
                         </div>
                     </div>
                 </div>
@@ -491,7 +487,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 <div id="messages-app--msg-options" class="overlays artboard phone-4 flex flex-col justify-end hidden"></div>
             </div>

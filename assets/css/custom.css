@@ -3,7 +3,7 @@ body {
     /* font-family: "Helvetica Neue", Helvetica, sans-serif; */
     /* font-family: 'San Francisco'; */
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    font-weight: 500;
+    font-weight: 400;
     font-size: 16px;
 }
 
@@ -33,6 +33,40 @@ body {
     width: 380px!important;
 }
 
+.artboard.iphone-11-promax {
+    width: 100%;
+    height: 716px!important;
+}
+
+.mockup-phone:has(.artboard.iphone-11-promax),
+.overlays-container:has(.artboard.iphone-11-promax) {
+    width: 412px!important;
+    height: 716px!important;
+}
+
+.overlays-container:has(.artboard.iphone-11-promax) {
+    top: unset!important;
+    left: unset!important;
+    margin-top: -716px!important;
+}
+
+.artboard.artboard.iphone-x {
+    width: 100%;
+    height: 716px!important;
+}
+
+.mockup-phone:has(.artboard.iphone-x),
+.overlays-container:has(.artboard.iphone-x) {
+    width: 375px!important;
+    height: 716px!important;
+}
+
+.overlays-container:has(.artboard.iphone-x) {
+    top: unset!important;
+    left: unset!important;
+    margin-top: -716px!important;
+}
+
 .phone-1 .grid-rows-6 {
     grid-template-rows: repeat(4, minmax(0, 1fr))!important;
 }
@@ -41,7 +75,9 @@ body {
     grid-template-rows: repeat(4, minmax(0, 1fr))!important;
 }
 
-.phone-3 .grid-rows-6 {
+.phone-3 .grid-rows-6,
+.iphone-11-promax .grid-rows-6,
+.iphone-x .grid-rows-6 {
     grid-template-rows: repeat(5, minmax(0, 1fr))!important;
 }
 
@@ -320,7 +356,11 @@ body {
 }
 
 .message .message-preview {
+    display: block;
+    height: 24px;
+    overflow: hidden;
     line-height: .75;
+    text-overflow: ellipsis;
 }
 
 .message-date .feather {
