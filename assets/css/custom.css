@@ -52,32 +52,32 @@ body {
 
 .artboard.artboard.iphone-x {
     width: 100%;
-    height: 716px!important;
+    height: 620px!important;
 }
 
 .mockup-phone:has(.artboard.iphone-x),
 .overlays-container:has(.artboard.iphone-x) {
     width: 375px!important;
-    height: 716px!important;
+    height: 620px!important;
 }
 
 .overlays-container:has(.artboard.iphone-x) {
     top: unset!important;
     left: unset!important;
-    margin-top: -716px!important;
+    margin-top: -620px!important;
 }
 
 .phone-1 .grid-rows-6 {
     grid-template-rows: repeat(4, minmax(0, 1fr))!important;
 }
 
-.phone-2 .grid-rows-6 {
+.phone-2 .grid-rows-6,
+.iphone-x .grid-rows-6  {
     grid-template-rows: repeat(4, minmax(0, 1fr))!important;
 }
 
 .phone-3 .grid-rows-6,
-.iphone-11-promax .grid-rows-6,
-.iphone-x .grid-rows-6 {
+.iphone-11-promax .grid-rows-6 {
     grid-template-rows: repeat(5, minmax(0, 1fr))!important;
 }
 
