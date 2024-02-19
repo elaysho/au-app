@@ -852,23 +852,20 @@ var auapp = (function(){
         if(mobileCheck()) {
             console.log("Device is mobile. Repositioning reacts on chat bubbles.");
 
-            // height = ($(bubbleElement).innerHeight() - $(reactIcon).innerHeight()) / 3;
-            // console.log("Height: " + height);
-
-            // if(height < 2) {
-            //     height = $(bubbleElement).innerHeight() / 2;
-            //     console.log("Height lower than 2px... Changed to: " + height);
-            // }
-
-            height = $(reactIcon).innerHeight() / 2;
+            height = ($(bubbleElement).innerHeight() - $(reactIcon).innerHeight()) / 3;
             console.log("Height: " + height);
 
+            if(height < 2) {
+                height = $(bubbleElement).innerHeight() / 2;
+                console.log("Height lower than 2px... Changed to: " + height);
+            }
+
             if(bubble['sender'] == 'from-me') {
-                $(reactIcon).attr('style', `right: ${width}px!important; margin-top: -${height}px!important;`);
+                $(reactIcon).attr('style', `right: ${width}px!important; top: -${height}px!important;`);
             }
     
             if(bubble['sender'] == 'from-them') {
-                $(reactIcon).attr('style', `left: ${width}px!important; margin-top: -${height}px!important;`);
+                $(reactIcon).attr('style', `left: ${width}px!important; top: -${height}px!important;`);
             }
         }
     }
