@@ -148,6 +148,9 @@ var auapp = (function(){
             case 'messages-app--msg-settings':
                 displayMessageSettings();
             break;
+            case 'messages-app--chat-settings':
+                displayChatSettings();
+            break;
         }
     }
 
@@ -431,6 +434,7 @@ var auapp = (function(){
         $('#messages-app--msg-tapback .message-body').find('.show-react-bbl-btn').on('click', showReactBubble);
 
         $('#messages-app--msg-tapback .message-body').find('.show-react-bbl-btn').attr('data-chat-id', chatId);
+        $('#messages-app--msg-tapback .message-body').find('.display-chat-settings-btn').attr('data-chat-id', chatId);
 
         let reactId     = message['sender'];
         let reactBubble = $(reactComponents).find(`.${reactId}-react-bbl`);
@@ -735,6 +739,73 @@ var auapp = (function(){
         });
     }
 
+    function displayChatSettings() {
+        let chatId  = $('#messages-app--msg-tapback .display-chat-settings-btn').attr('data-chat-id');
+        let message = getMessage(chatId);
+
+        // Display chat settings
+        $('#messages-app--chat-settings .chat-content').html(message['content']);
+
+        let delivered = message['content'] ? 'yes' : 'no';
+        let read      = message['read'] ? 'yes' : 'no';
+        let readAt    = message['read-at'] != null ? message['read-at'] : null;
+
+        $('#messages-app--chat-settings .delivered-chat-setting').val(delivered).change();
+        $('#messages-app--chat-settings .read-chat-setting').val(read).change();
+        $('#messages-app--chat-settings .read-at-chat-setting').val(readAt).change();
+
+        // Delete the chat bubble
+        $('#messages-app--chat-settings .delete-chat').attr('data-chat-id', chatId);
+        $('#messages-app--chat-settings .delete-chat').on('click', function() {
+            let chatId    = $(this).data('chat-id');
+            let chat      = getMessage(chatId);
+            let messageId = chat['message-thread-id'];
+
+            let messages  = localStorage.getItem('messages') ?? JSON.stringify({});
+            messages      = JSON.parse(messages);
+
+            let message   = messages[messageId] ?? null;
+            if(message != null) {
+                delete message['thread'][chatId];
+
+                messages[messageId] = message;
+                messages = JSON.stringify(messages);
+                localStorage.setItem('messages', messages);
+
+                hideOverlayById('messages-app--chat-settings');
+                openMessageThread(messageId);
+            }
+        });
+
+        $('#messages-app--chat-settings .chat-save-settings').attr('data-chat-id', chatId);
+        $('#messages-app--chat-settings .chat-save-settings').on('click', function() {
+            let chatId    = $(this).data('chat-id');
+            let chat      = getMessage(chatId);
+            let messageId = chat['message-thread-id'];
+
+            let messages = localStorage.getItem('messages') ?? JSON.stringify({});
+            messages = JSON.parse(messages);
+
+            if(chat != null) {
+                chat['content']   = $('#messages-app--chat-settings .chat-content').val();
+                chat['delivered'] = $('#messages-app--chat-settings .delivered-chat-setting').val();
+                chat['delivered'] = chat['delivered'] == 'yes' ? true : false;
+                chat['read']      = $('#messages-app--chat-settings .read-chat-setting').val();
+                chat['read']      = chat['read'] == 'yes' ? true : false;
+                chat['read-at']   = $('#messages-app--chat-settings .read-at-chat-setting').val();
+
+                console.log($('#messages-app--chat-settings .delivered-chat-setting'), chat);
+
+                messages[messageId]['thread'][chatId] = chat;
+                messages = JSON.stringify(messages);
+                localStorage.setItem('messages', messages);
+
+                hideOverlayById('messages-app--chat-settings');
+                openMessageThread(messageId);
+            }
+        });
+    }
+
     function onClickOfMessageThread(event) {
         let contactId = $(this).data('contact-id');
         openMessageThread(contactId);
@@ -794,6 +865,11 @@ var auapp = (function(){
     }
 
     function displayChatBubbles(messageThread) {
+        let cloneItems = $('#messages-app--msg').find('.message-body').find('.clone-item').clone();
+
+        $('#messages-app--msg').find('.message-body').html('');
+        $('#messages-app--msg').find('.message-body').append(cloneItems);
+
         $.each(messageThread.thread ?? {}, function(i, bubble) {
             displayChatBubble(bubble);
         });
@@ -970,6 +1046,23 @@ var auapp = (function(){
                 repositionBubbleReact(bubble, bubbleElement, reactWrapper);
             }
         } 
+
+
+        if(bubble['sender'] == 'from-me' && bubble['delivered']) {
+            let bubbleParent = $(bubbleElement).parent();
+            if($(bubbleElement).parent().hasClass('react-wrapper')) {
+                bubbleParent = $(bubbleElement).parent().parent();
+            }
+
+            if($(bubbleParent).hasClass('stacked-messages-from-me')) {
+                console.log(bubble);
+                if(bubble['read'] == true) {
+                    $(bubbleParent).append('<small class="delivered-tag font-semibold text-gray-400 text-right"> Read </small>');
+                } else {
+                    $(bubbleParent).append('<small class="delivered-tag font-semibold ios-primary-color text-right"> Delivered </small>');
+                }
+            }
+        }
     }
 
     function getReactToDisplay(bubble) {

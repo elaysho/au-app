@@ -154,7 +154,8 @@ body {
 #messages-app--new-msg-options.overlays,
 #contacts-app--add-new.overlays,
 #messages-app--msg-tapback-react.overlays,
-#messages-app--msg-settings.overlays {
+#messages-app--msg-settings.overlays,
+#messages-app--chat-settings.overlays {
     background: rgba(0, 0, 0, 0.13);
     backdrop-filter: unset!important;
     -webkit-backdrop-filter: unset!important;
