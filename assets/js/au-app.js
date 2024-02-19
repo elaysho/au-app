@@ -1053,7 +1053,6 @@ var auapp = (function(){
             }
 
             if($(bubbleParent).hasClass('stacked-messages-from-me')) {
-                console.log(bubble);
                 if(bubble['read'] == true) {
                     $(bubbleParent).append('<small class="delivered-tag font-semibold text-gray-400 text-right"> Read </small>');
                 } else {
