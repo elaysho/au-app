@@ -685,6 +685,9 @@ var auapp = (function(){
             $('#messages-app--msg-settings .pin-message-setting').val('yes').change();
         }
 
+        let defaultFontSize = localStorage.getItem('font-size') ?? 16;
+        $('#messages-app--msg-settings .font-size').val(defaultFontSize);
+
         $('#messages-app--msg-settings .delete-message').attr('data-message-id', messageId);
         $('#messages-app--msg-settings .delete-message').on('click', deleteMessageThread);
 
@@ -711,6 +714,10 @@ var auapp = (function(){
             messages[messageId] = messageThread;
             messages            = JSON.stringify(messages);
             localStorage.setItem('messages', messages);
+
+            let fontSize = $('#messages-app--msg-settings .font-size').val();
+            localStorage.setItem('font-size', fontSize);
+            initSettings();
 
             // Apply custom photo and nickname
             let customPhoto    = $('#message-photo').val();
@@ -1166,8 +1173,14 @@ var auapp = (function(){
         });
     }
 
+    function initSettings() {
+        let fontSize = localStorage.getItem('font-size') ?? 16;
+        $('body').attr('style', `font-size: ${fontSize}px!important`);
+    }
+
     function init() {
         initIcons();
+        initSettings();
 
         displayTime();
         timeInterval = setInterval(displayTime, 6000);

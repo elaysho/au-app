@@ -346,7 +346,7 @@
                                         <button class="pin-message btn join-item bg-purple-500 text-white text-center">
                                             <i data-feather="map-pin"></i>
                                         </button>
-                                        <button class="delete-message btn join-item bg-red-500 text-white text-center">
+                                        <button class="delete-message btn join-item bg-red-500 hover:bg-red-400 text-white text-center">
                                             <i data-feather="trash"></i>
                                         </button>
                                     </div>
@@ -443,7 +443,7 @@
                         <div class="navbar-space text-lg">
                             <div class="bg-white flex justify-between items-center py-2 ios-primary-color">
                                 <button class="hide-overlay-btn justify-between items-center" data-overlay-id="messages-app--msg-tapback-react"> <i data-feather="chevron-left" class="ml-1"></i> </button>
-                                <span class="text-black font-semibold ml-8"> Add React </span>
+                                <span class="text-black font-semibold"> Add React </span>
                                 <span class="message-save-react ml-1 mr-3"> &nbsp; </span> 
                             </div>
                         </div>
@@ -455,7 +455,7 @@
 
                             <div class="w-full bg-white mt-3 py-2">
                                 <div class="w-full flex flex-col mt-5 px-5">
-                                    <label>React from Them</label>
+                                    <label class="font-semibold">React from Them</label>
                                     <div class="grid grid-cols-6 cursor-pointer">
                                         <img class="react-select" data-chat-react-from="from-them" data-react="heart" src="assets/imgs/iphone/messages/heart-react-from-them-light.png">
                                         <img class="react-select" data-chat-react-from="from-them" data-react="like" src="assets/imgs/iphone/messages/like-react-from-them-light.png">
@@ -466,7 +466,7 @@
                                     </div>
                                 </div>
                                 <div class="w-full flex flex-col my-5 px-5">
-                                    <label>React from You</label>
+                                    <label class="font-semibold">React from You</label>
                                     <div class="grid grid-cols-6 cursor-pointer">
                                         <img class="react-select" data-chat-react-from="from-me" data-react="heart" src="assets/imgs/iphone/messages/heart-react-for-them-light.png">
                                         <img class="react-select" data-chat-react-from="from-me" data-react="like" src="assets/imgs/iphone/messages/like-react-for-them-light.png">
@@ -476,9 +476,11 @@
                                         <img class="react-select" data-chat-react-from="from-me" data-react="question" src="assets/imgs/iphone/messages/question-react-for-them-light.png">
                                     </div>
                                 </div>
-                                <div class="w-full flex flex-col mb-5 px-5">
-                                    <button class="btn-remove-react react-select btn btn-block bg-danger">Remove React</button>
-                                </div>
+                                
+                            </div>
+
+                            <div class="w-full flex flex-col mt-3 mb-5 px-5">
+                                <button class="btn-remove-react react-select btn btn-block bg-red-500 hover:bg-red-400 text-white mt-5">Remove React</button>
                             </div>
                         </div>
                     </div>
@@ -517,7 +519,19 @@
                                     <option value="no">No</option>
                                     <option value="yes">Yes</option>
                                 </select>
-                                <button class="delete-message btn btn-block bg-red-500 text-white font-medium mt-5">Delete Message</button>
+
+                                <label class="font-semibold mt-3">Font Size</label>
+                                <input type="range" min="12" max="16" value="16" step="1" name="font-size" class="font-size range range-xs" /> 
+                                <div class="w-full flex justify-between text-xs px-2">
+                                    <span>12</span>
+                                    <span>13</span>
+                                    <span>14</span>
+                                    <span>15</span>
+                                    <span>16</span>
+                                </div>
+                                <small> Changes to font size is saved. </small>
+
+                                <button class="delete-message btn btn-block bg-red-500 hover:bg-red-400 text-white font-medium mt-10">Delete Message</button>
                             </div>
                         </div>
                     </div>
