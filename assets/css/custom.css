@@ -598,8 +598,8 @@ p[class^="from-"].emoji::before {
     margin-bottom: 0 !important;
 }
 
-.stacked-messages p:last-child,
-.react-bbl-wrapper p:last-child {
+.stacked-messages > p:last-child,
+.stacked-messages .react-bbl-wrapper p:last-child {
     margin-bottom: 0.5rem !important;
 }
 

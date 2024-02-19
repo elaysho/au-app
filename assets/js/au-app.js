@@ -929,8 +929,9 @@ var auapp = (function(){
         let react     = getReactToDisplay(bubble).react;
         let reactFrom = getReactToDisplay(bubble).reactFrom;
 
+        let reactWrapper = null;
         if(react !== null) {
-            let reactWrapper = displayBubbleReact(bubble, bubbleElement, react, reactFrom);
+            reactWrapper = displayBubbleReact(bubble, bubbleElement, react, reactFrom);
 
             // Add to message body
             $(stackedMessages).append(reactWrapper);
@@ -945,6 +946,30 @@ var auapp = (function(){
             $('.messages-app--msg .message-body').append(stackedMessages);
             $('.messages-app--msg .message-body').scrollTop($('.message-body')[0].scrollHeight);
         }
+
+        if($(bubbleElement).height() > 20 && $(bubbleElement).height() <= 40) {
+            if((bubble['width'] ?? null) == null) {
+                let bubbleWidth    = $(bubbleElement).width();
+                let minWidth       = bubbleWidth / 2;
+                minWidth           = minWidth + (minWidth / 2);
+
+                let randomBblWidth = Math.floor(Math.random() * (bubbleWidth - minWidth + 1)) + minWidth;
+                bubble['width']    = randomBblWidth;
+                storeChatBubble(bubble['message-thread-id'], bubble);
+
+                $(bubbleElement).attr('style', `width: ${randomBblWidth}px!important;`);
+            } else {
+                let bubbleWidth = bubble['width'] ?? $(bubbleElement).width();
+                $(bubbleElement).attr('style', `width: ${bubbleWidth}px!important;`);
+
+                console.log(bubble);
+            }
+
+            if(react !== null && reactWrapper !== null) {
+                // Reposition react icons base on bubble's width
+                repositionBubbleReact(bubble, bubbleElement, reactWrapper);
+            }
+        } 
     }
 
     function getReactToDisplay(bubble) {
@@ -983,6 +1008,8 @@ var auapp = (function(){
         let reactIcon  = $(reactWrapper).find('.react-icon');
         let width      = $(bubbleElement).innerWidth() - 15;
         let height     = ($(bubbleElement).innerHeight() - $(reactIcon).innerHeight()) / 3;
+        console.log("Height: " + height);
+        console.log("Width: " + width);
 
         if(bubble['sender'] == 'from-me') {
             $(reactIcon).attr('style', `right: ${width}px!important; top: -${height}px!important;`);
@@ -995,9 +1022,9 @@ var auapp = (function(){
         if(mobileCheck()) {
             console.log("Device is mobile. Repositioning reacts on chat bubbles.");
 
-            // height = ($(bubbleElement).innerHeight() - $(reactIcon).innerHeight()) / 3;
             height = ($(reactIcon).innerHeight() / 2) - 2;
             console.log("Height: " + height);
+            console.log("Width: " + width);
 
             // if(height < 2) {
             //     height = $(bubbleElement).innerHeight() / 2;
@@ -1045,10 +1072,6 @@ var auapp = (function(){
         let bubbleElement = $('#messages-app--msg [data-chat-id="' + chatId + '"]').clone();        
         let bblWrapper    = $('#messages-app--msg [data-chat-id="' + chatId + '"]').parent();
 
-        console.log("Remove React: " + $(this).hasClass('btn-remove-react'));
-        console.log(bblWrapper);
-        console.log(bubbleElement);
-
         if($(this).hasClass('btn-remove-react') == false) {
             if($(bblWrapper).hasClass('react-wrapper')) {
                 bubbleElement = bubbleElement[1];
@@ -1070,7 +1093,7 @@ var auapp = (function(){
                 if(bubbleElement.length > 1) {
                     bubbleElement = bubbleElement[1];
                 }
-                
+
                 $(bblWrapper).replaceWith(bubbleElement);
             }
         }
