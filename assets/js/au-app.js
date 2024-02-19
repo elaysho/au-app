@@ -1067,7 +1067,11 @@ var auapp = (function(){
             repositionBubbleReact(message, bubbleElement, reactWrapper);
         } else {
             if($(bblWrapper).hasClass('react-wrapper')) {
-                $(bblWrapper).replaceWith(bubbleElement[1]);
+                if(bubbleElement.length > 1) {
+                    bubbleElement = bubbleElement[1];
+                }
+                
+                $(bblWrapper).replaceWith(bubbleElement);
             }
         }
     }
