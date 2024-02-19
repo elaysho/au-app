@@ -14,13 +14,17 @@
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/sf-ui-text-2" rel="stylesheet">
-    <!-- <link href="https://cdn.jsdelivr.net/gh/mailtoharshit/San-Francisco-Font-/sanfrancisco.css" rel="stylesheet"> -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.0/dist/full.min.css" rel="stylesheet" type="text/css" />
+    
+    <!-- <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.0/dist/full.min.css" rel="stylesheet" type="text/css" /> -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link href="assets/css/custom.css" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+
+    <script src="assets/js/canvas-toBlob.js"></script>
+    <script src="assets/js/html2canvas.js"></script>
 
     <script src="assets/js/au-app.js"></script>
     <script src="assets/js/index.js"></script>
@@ -29,7 +33,7 @@
     <div class="xl:container xl:mx-auto sm:w-screen h-screen flex justify-center items-center">
         <div class="mockup-phone self-center py-2">
             <!-- Screen -->
-            <div class="screen">
+            <div id="screen" class="screen">
                 <!-- Navbar -->
                 <div class="camera"></div> 
                 <div class="iphone-navbar">
@@ -218,7 +222,10 @@
                                             <img class="self-center" src="assets/imgs/iphone/contacts/sample-icon.png">
                                         </div>
                                     </div>
-                                    <span class="flex justify-end items-center ios-primary-color"> <i data-feather="video" class="mr-4"></i> </span>
+                                    <div class="message-upper-right-actions flex justify-end">
+                                        <span class="flex justify-end items-center ios-primary-color cursor-pointer"> <i data-feather="video" class="mr-4"></i> </span>
+                                        <span class="export-message-btn flex justify-end items-center ios-primary-color cursor-pointer" data-export-id=".export-message-btn" data-export-container="#messages-app--msg .message-upper-right-actions"> <i data-feather="download" class="mr-4"></i> </span>
+                                    </div>
                                 </div>
                                 <span class="overlay-btn message-name text-xs font-light mx-auto mt-1 mb-2 flex justify-center items-center cursor-pointer" data-overlay-id="messages-app--msg-settings"> 
                                     <span class="ml-1">Noah</span> <i data-feather="chevron-right" class=""></i>

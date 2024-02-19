@@ -961,8 +961,6 @@ var auapp = (function(){
             } else {
                 let bubbleWidth = bubble['width'] ?? $(bubbleElement).width();
                 $(bubbleElement).attr('style', `width: ${bubbleWidth}px!important;`);
-
-                console.log(bubble);
             }
 
             if(react !== null && reactWrapper !== null) {
@@ -1177,6 +1175,36 @@ var auapp = (function(){
         $(element).find('.message-body').append(cloneItems);
     }
 
+    function exportMessage(event) {
+        let exportBtnId = $(this).data('export-id');
+        let exportBtn   = $('#screen').find(exportBtnId).clone();
+
+        $('#screen').find(exportBtnId).remove();
+
+        // html2canvas($("#screen")[0], {
+        //     onrendered: function(canvas) {
+        //         theCanvas = canvas;
+        //         console.log(canvas);
+
+        //         canvas.toBlob(function(blob) {
+        //             saveAs(blob, "export.png"); 
+        //         });
+        //     }
+        // });
+
+        html2canvas(document.querySelector("#screen")).then(canvas => {
+            console.log(canvas);
+            
+            canvas.toBlob(function(blob) {
+                saveAs(blob, "export.png"); 
+            });
+        });
+
+        let exportContainer = $(this).data('export-container');
+        $(exportContainer).append(exportBtn);
+        $(exportBtn).on('click', exportMessage);
+    }
+
     // Events & Initialization
     function bindEvents() {
         $('.app-icon').on('click', appSwitcher);
@@ -1193,6 +1221,8 @@ var auapp = (function(){
         $('.sender-switcher').on('click', messagesSenderSwitcher);
         $('.send-message-btn').on('click', sendMessage);
         $('.react-select').on('click', updateChatBubbleReact);
+
+        $('.export-message-btn').on('click', exportMessage);
 
         $(document).click(function(event) {
             if($(event.target).hasClass('from-them') || $(event.target).hasClass('from-me')) {
