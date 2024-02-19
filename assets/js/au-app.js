@@ -1024,7 +1024,7 @@ var auapp = (function(){
         if($(this).hasClass('btn-remove-react') == false) {
             message['reacts'][reactFrom] = react;
         } else {
-            message['reacts']['from-me'] = null;
+            message['reacts']['from-me']   = null;
             message['reacts']['from-them'] = null;
         }
 
@@ -1044,6 +1044,10 @@ var auapp = (function(){
         // Update chat bubble ui to display react
         let bubbleElement = $('#messages-app--msg [data-chat-id="' + chatId + '"]').clone();        
         let bblWrapper    = $('#messages-app--msg [data-chat-id="' + chatId + '"]').parent();
+
+        console.log("Remove React: " + $(this).hasClass('btn-remove-react'));
+        console.log(bblWrapper);
+        console.log(bubbleElement);
 
         if($(this).hasClass('btn-remove-react') == false) {
             if($(bblWrapper).hasClass('react-wrapper')) {
