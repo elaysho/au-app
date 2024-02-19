@@ -240,7 +240,7 @@
                                     <div class="w-8 h-8 rounded-full bg-gray-200 flex justify-center items-center"> <i data-feather="plus" class=""></i> </div>
                                 </div>
                                 <div class="message-textfield-container grow w-full flex items-center rounded-full border border-solid ml-2">
-                                    <textarea id="message-textfield" placeholder="iMessage" class="message-textfield input input-sm grow rounded-full bg-transparent font-light pt-1"></textarea>
+                                    <textarea id="message-textfield" placeholder="iMessage" class="message-textfield input input-sm grow rounded-full bg-transparent pt-1"></textarea>
                                     <div class="message-textfield-btns mr-1">
                                         <div id="send-message-btn" class="send-message-btn w-6 h-6 rounded-full bg-gray-200 flex justify-center items-center hidden"> <i data-feather="arrow-up" class=""></i> </div>
                                         <div id="send-audio-message-btn" class="send-audio-message-btn w-6 h-6 rounded-full bg-transparent flex justify-center items-center"> <i data-feather="mic" class="text-gray-400"></i> </div>
@@ -340,19 +340,29 @@
                             <!-- Messages List-->
                             <ol class="messages-list px-2">
                                 <li class="message py-3 flex items-start gap-3 clone-item hidden">
-                                    <div class="flex justify-start items-center">
-                                        <div class="contacts-icon">
-                                            <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
-                                        </div>
-                                    </div>
-                                    <div class="grow flex flex-col justify-start">
-                                        <div class="flex">
-                                            <span class="contact-name text-lg font-semibold grow"> Noah </span>
-                                            <div class="message-date text-sm mt-1 font-light text-gray-400 flex justify-end">
-                                                <span class="date">9:41 PM</span> <i data-feather="chevron-right" class="ml-1"></i>
+                                    <div class="message-swipe flex items-start gap-3">
+                                        <div class="flex justify-start items-center">
+                                            <div class="contacts-icon">
+                                                <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
                                             </div>
                                         </div>
-                                        <span class="message-preview text-sm text-gray-400 mt-0 pt-0"> Message Preview </span>
+                                        <div class="grow flex flex-col justify-start">
+                                            <div class="flex">
+                                                <span class="contact-name text-lg font-semibold grow"> Noah </span>
+                                                <div class="message-date text-sm mt-1 font-light text-gray-400 flex justify-end">
+                                                    <span class="date">9:41 PM</span> <i data-feather="chevron-right" class="ml-1"></i>
+                                                </div>
+                                            </div>
+                                            <span class="message-preview text-sm text-gray-400 mt-0 pt-0"> Message Preview </span>
+                                        </div>
+                                    </div>
+                                    <div class="message-actions join h-full rounded-none flex justify-center items-center">
+                                        <button class="message-action btn join-item bg-purple-500 text-white text-center">
+                                            <i data-feather="map-pin"></i>
+                                        </button>
+                                        <button class="message-action btn join-item bg-red-500 text-white text-center">
+                                            <i data-feather="trash"></i>
+                                        </button>
                                     </div>
                                 </li>
                             </ol>
