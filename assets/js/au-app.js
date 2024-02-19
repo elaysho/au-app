@@ -583,11 +583,36 @@ var auapp = (function(){
         messages = JSON.parse(messages);
 
         // Dipslay pinned messages (Coming Soon)
+        let messageListContainer = $('#messages-app--home .pin-messages');
+        let cloneItems           = $('#messages-app--home .pin-messages').find('.clone-item').clone();
+
+        $(messageListContainer).html('');
+        $(messageListContainer).append(cloneItems);
+
+        $.each(messages, function(i, message) {
+            if(message['is-pinned'] == true) {
+                let messagePin = $(messageListContainer).find('.clone-item').last().clone();
+
+                $(messagePin).removeClass('hidden');
+                $(messagePin).removeClass('clone-item');
+
+                message['contact']['contact-icon'] = message['contact']['contact-icon'] ?? (message['contact']['contact-photo'] ?? null);
+                $(messagePin).find('.contacts-icon').find('img').attr('src', message['contact']['contact-icon']);
+                $(messagePin).find('.contact-name').html(message['contact']['nickname'] ?? message['contact']['contact-name']);
+
+                $(messagePin).attr('data-message-id', message['contact']['contact-id']);
+                $(messagePin).attr('data-contact-id', message['contact']['contact-id']);
+
+                // Append to message list container
+                $(messageListContainer).append(messagePin);
+                $(messagePin).on('click', onClickOfMessageThread);
+            }
+        });
 
         // Messages List
         // Clear message list on every call of displayMessagesList
-        let messageListContainer = $('#messages-app--home .messages-list');
-        let cloneItems           = $('#messages-app--home .messages-list').find('.clone-item').clone();
+        messageListContainer = $('#messages-app--home .messages-list');
+        cloneItems           = $('#messages-app--home .messages-list').find('.clone-item').clone();
 
         $(messageListContainer).html('');
         $(messageListContainer).append(cloneItems);
@@ -600,7 +625,6 @@ var auapp = (function(){
                 $(messageList).removeClass('clone-item');
 
                 message['contact']['contact-icon'] = message['contact']['contact-icon'] ?? (message['contact']['contact-photo'] ?? null);
-
                 $(messageList).find('.contacts-icon').find('img').attr('src', message['contact']['contact-icon']);
                 $(messageList).find('.contact-name').html(message['contact']['nickname'] ?? message['contact']['contact-name']);
                 $(messageList).find('.message-preview').html(message['preview-message'] ?? 'No messages yet');
@@ -613,13 +637,20 @@ var auapp = (function(){
                 });
 
                 $(messageList).find('.message-date span').html(message['last-message-time'] ?? time);
+                $(messageList).find('.pin-message').attr('data-message-id', message['contact']['contact-id']);
+                $(messageList).find('.pin-message').on('click', pinMessage);
+
+                $(messageList).find('.delete-message').attr('data-message-id', message['contact']['contact-id']);
+                $(messageList).find('.delete-message').on('click', pinMessage);
 
                 $(messageList).attr('data-message-id', message['contact']['contact-id']);
+                $(messageList).find('.message-swipe').attr('data-message-id', message['contact']['contact-id']);
                 $(messageList).attr('data-contact-id', message['contact']['contact-id']);
+                $(messageList).find('.message-swipe').attr('data-contact-id', message['contact']['contact-id']);
 
                 // Append to message list container
                 $(messageListContainer).append(messageList);
-                $(messageList).on('click', onClickOfMessageThread);
+                $(messageList).find('.message-swipe').on('click', onClickOfMessageThread);
             }
         });
     }
@@ -661,6 +692,21 @@ var auapp = (function(){
             contact['contact-icon'] = contact['contact-icon'] ?? contact['contact-photo'];
             $('#messages-app--msg .contacts-icon').find('img').attr('src', contact['contact-icon']);
             $('#messages-app--msg .message-name span').html(contact['nickname'] ?? contact['contact-name']);
+        }
+    }
+
+    function pinMessage(event) {
+        let messages = localStorage.getItem('messages') ?? JSON.stringify({});
+        messages = JSON.parse(messages);
+
+        let messageId = $(this).data('message-id');
+        let message = messages[messageId] ?? null;
+
+        if(message != null) {
+            message['is-pinned'] = true;
+            messages[messageId] = message;
+            messages = JSON.stringify(messages);
+            localStorage.setItem('messages', messages);
         }
     }
 

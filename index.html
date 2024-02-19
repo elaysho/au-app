@@ -315,21 +315,7 @@
                         <div class="w-full h-80 bg-white mt-3 grow flex flex-col px-4 contacts-body">
                             <!-- Pin Messages -->
                             <div class="pin-messages grid grid-cols-3 gap-3 mt-3 mb-5">
-                                <div class="pin-message flex flex-col justify-center items-center">
-                                    <div class="contacts-icon">
-                                        <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
-                                    </div>
-                                    <span class="contact-name text-sm text-gray-500 mt-1">Noah</span>
-                                </div>
-
-                                <div class="pin-message flex flex-col justify-center items-center">
-                                    <div class="contacts-icon">
-                                        <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
-                                    </div>
-                                    <span class="contact-name text-sm text-gray-500 mt-1">Noah</span>
-                                </div>
-
-                                <div class="pin-message flex flex-col justify-center items-center">
+                                <div class="pin-message flex flex-col justify-center items-center cursor-pointer clone-item hidden">
                                     <div class="contacts-icon">
                                         <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
                                     </div>
@@ -357,10 +343,10 @@
                                         </div>
                                     </div>
                                     <div class="message-actions join h-full rounded-none flex justify-center items-center">
-                                        <button class="message-action btn join-item bg-purple-500 text-white text-center">
+                                        <button class="pin-message btn join-item bg-purple-500 text-white text-center">
                                             <i data-feather="map-pin"></i>
                                         </button>
-                                        <button class="message-action btn join-item bg-red-500 text-white text-center">
+                                        <button class="delete-message btn join-item bg-red-500 text-white text-center">
                                             <i data-feather="trash"></i>
                                         </button>
                                     </div>
