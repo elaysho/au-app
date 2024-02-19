@@ -932,7 +932,7 @@ var auapp = (function(){
                 'content': content,
                 'date': date,
                 'time': time,
-                'delivered': true,
+                'delivered': false,
                 'read': false,
                 'read-at': null,
                 'reacts': {
