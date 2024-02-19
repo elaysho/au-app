@@ -852,7 +852,7 @@ var auapp = (function(){
         if(mobileCheck()) {
             console.log("Device is mobile. Repositioning reacts on chat bubbles.");
 
-            height = $(bubbleElement).innerHeight() / 3;
+            height = ($(bubbleElement).innerHeight() - $(reactIcon).innerHeight()) / 3;
             console.log("Height: " + height);
 
             if(height < 2) {
