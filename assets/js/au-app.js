@@ -1183,7 +1183,8 @@ var auapp = (function(){
 
         html2canvas(document.querySelector("#screen")).then(canvas => {
             canvas.toBlobHD(function(blob) {
-                saveAs(blob, "export.png"); 
+                let date = Date.now();
+                saveAs(blob, `export-${date}.png`); 
             });
         });
 
