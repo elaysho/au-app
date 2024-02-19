@@ -794,8 +794,6 @@ var auapp = (function(){
                 chat['read']      = chat['read'] == 'yes' ? true : false;
                 chat['read-at']   = $('#messages-app--chat-settings .read-at-chat-setting').val();
 
-                console.log($('#messages-app--chat-settings .delivered-chat-setting'), chat);
-
                 messages[messageId]['thread'][chatId] = chat;
                 messages = JSON.stringify(messages);
                 localStorage.setItem('messages', messages);
