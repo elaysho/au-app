@@ -839,14 +839,22 @@ var auapp = (function(){
     function repositionBubbleReact(bubble, bubbleElement, reactWrapper) {
         let reactIcon  = $(reactWrapper).find('.react-icon');
         let width      = $(bubbleElement).innerWidth() - 15;
-        let height     = ($(bubbleElement).innerHeight() - $(reactIcon).innerHeight()) / 3;
+        let height     = ($(bubbleElement).innerHeight() - $(reactIcon).innerHeight()) / 2;
 
         if(bubble['sender'] == 'from-me') {
             $(reactIcon).attr('style', `right: ${width}px!important; top: -${height}px!important;`);
+
+            // if(mobileCheck()) {
+            //     $(reactIcon).attr('style', `right: ${width}px!important; margin-top: -${height}px!important;`);
+            // }
         }
 
         if(bubble['sender'] == 'from-them') {
             $(reactIcon).attr('style', `left: ${width}px!important; top: -${height}px!important;`);
+
+            // if(mobileCheck()) {
+            //     $(reactIcon).attr('style', `left: ${width}px!important; margin-top: -${height}px!important;`);
+            // }
         }
     }
 
