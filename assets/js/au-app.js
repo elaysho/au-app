@@ -428,6 +428,9 @@ var auapp = (function(){
         $('#messages-app--msg-tapback .message-body').html('');
         $('#messages-app--msg-tapback .message-body').append(options);
         $('#messages-app--msg-tapback .message-body').find('.overlay-btn').on('click', overlaySwitcher);
+        $('#messages-app--msg-tapback .message-body').find('.show-react-bbl-btn').on('click', showReactBubble);
+
+        $('#messages-app--msg-tapback .message-body').find('.show-react-bbl-btn').attr('data-chat-id', chatId);
 
         let reactId     = message['sender'];
         let reactBubble = $(reactComponents).find(`.${reactId}-react-bbl`);
@@ -463,7 +466,6 @@ var auapp = (function(){
                 if(message['sender'] == 'from-me') {
                     childWrapper = $('<div class="react-bbl-wrapper w-full flex justify-end"></div>');
                 }
-
 
                 // If chat bubble is currently clicked, enclose with a wrapper
                 if($(child).data('chat-id') == chatId) {
@@ -1167,6 +1169,32 @@ var auapp = (function(){
         return reactIcon;
     }
 
+    function showReactBubble(event) {
+        // Hide options
+        $('#messages-app--msg-tapback .tapback-options').parent().addClass('hidden');
+
+        // Get chat info
+        let chatId  = $(this).data('chat-id');
+        let message = getMessage(chatId);
+
+        // Clone react bubble
+        let messageBody     = $('#messages-app--msg .message-body');
+        let reactComponents = $('#messages-app--msg-tapback .message-body').parent().find('.react-components').clone();
+
+        let reactId         = message['sender'];
+        let reactBubble     = $(reactComponents).find(`.${reactId}-react-bbl`);
+
+        $('#messages-app--msg-tapback .react-bbl-wrapper').prepend(reactBubble);
+        $('#messages-app--msg-tapback .react-bbl-wrapper').children().first().attr('style', `margin-top: -52px!important;`);
+
+        $('#messages-app--msg-tapback .react-wrapper').prepend(reactBubble);
+        $('#messages-app--msg-tapback .react-wrapper').children().first().attr('style', `margin-top: -84px!important;`);
+
+        $('#messages-app--msg-tapback .close-tapback-overlay').on('click', function() {
+            $('#messages-app--msg-tapback .tapback-options').parent().removeClass('hidden');
+        });
+    }
+
     function closeMessageThread(element) {
         $(element).attr('data-current-message-thread', null);
         let cloneItems = $(element).find('.message-body').find('.clone-item').clone();
@@ -1209,6 +1237,7 @@ var auapp = (function(){
         $('.sender-switcher').on('click', messagesSenderSwitcher);
         $('.send-message-btn').on('click', sendMessage);
         $('.react-select').on('click', updateChatBubbleReact);
+        $('.show-react-bbl-btn').on('click', showReactBubble);
 
         $('.export-message-btn').on('click', exportMessage);
 

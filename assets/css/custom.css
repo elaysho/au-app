@@ -672,7 +672,7 @@ p[class^="from-"].emoji::before {
 .react-icon {
     position: absolute;
     width: 40px;
-    z-index: 1;
+    z-index: 1999;
 }
 
 @font-face {
