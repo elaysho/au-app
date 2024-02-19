@@ -152,23 +152,28 @@ body {
 
 #messages-app--new-msg-actionsheet.overlays,
 #messages-app--new-msg-options.overlays,
-#contacts-app--add-new.overlays {
+#contacts-app--add-new.overlays,
+#messages-app--msg-tapback-react.overlays,
+#messages-app--msg-settings.overlays {
     background: rgba(0, 0, 0, 0.13);
     backdrop-filter: unset!important;
     -webkit-backdrop-filter: unset!important;
 }
 
+.overflow-page-wrapper,
 .new-msg-options-wrapper,
-.new-contacts-wrapper {
+.new-contacts-wrapper,
+.message-settings-wrapper {
     overflow: hidden;
     height: 95%;
     border-top-right-radius: 12px;
     border-top-left-radius: 12px;
 }
 
-.new-msg-options-wrapper .navbar-space {
+.new-msg-options-wrapper .navbar-space,
+.overflow-page-wrapper .navbar-space {
     width: 100%;
-    height: 20px!important;
+    height: 62px!important;
 }
 
 .overlays-container .hidden {
@@ -314,11 +319,13 @@ body {
     height: 62px!important;
 }
 
-.new-contacts-wrapper .contacts-icon {
+.new-contacts-wrapper .contacts-icon,
+.message-settings-wrapper .contacts-icon {
     height: 100px!important;
     width: 100px!important;
 }
 
+.overflow-page-wrapper .feather,
 .new-contacts-wrapper .feather {
     height: 24px!important;
     width: 24px!important;

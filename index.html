@@ -189,7 +189,7 @@
                                 </div>
 
                                 <div class="w-full flex flex-col mt-5 px-3">
-                                    <label>Is this your main account?</label>
+                                    <label class="font-semibold">Is this your main account?</label>
                                     <select class="main-account-select select select-bordered w-full new-contact-form-input" name="main-account">
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
@@ -213,14 +213,14 @@
                             <div class="w-full app-background">
                                 <div class="grid grid-cols-3 gap-3">
                                     <span id="close-message-btn" class="app-icon close-message-btn flex justify-between items-center ios-primary-color" data-screen-id="messages-app--home"> <i data-feather="chevron-left" class="ml-1"></i> </span>
-                                    <div class="w-full flex flex-row justify-center">
+                                    <div class="overlay-btn flex flex-row justify-center cursor-pointer" data-overlay-id="messages-app--msg-settings">
                                         <div class="contacts-icon">
                                             <img class="self-center" src="assets/imgs/iphone/contacts/sample-icon.png">
                                         </div>
                                     </div>
                                     <span class="flex justify-end items-center ios-primary-color"> <i data-feather="video" class="mr-4"></i> </span>
                                 </div>
-                                <span class="message-name text-xs font-light mx-auto mt-1 mb-2 flex justify-center items-center"> 
+                                <span class="overlay-btn message-name text-xs font-light mx-auto mt-1 mb-2 flex justify-center items-center cursor-pointer" data-overlay-id="messages-app--msg-settings"> 
                                     <span class="ml-1">Noah</span> <i data-feather="chevron-right" class=""></i>
                                 </span>
                             </div>
@@ -324,8 +324,8 @@
                             </div>
 
                             <!-- Messages List-->
-                            <ol class="messages-list px-2">
-                                <li class="message py-3 flex items-start gap-3 clone-item hidden">
+                            <ol class="messages-list pl-2 pr-0">
+                                <li class="message py-3 flex items-start content-stretch gap-3 clone-item hidden">
                                     <div class="message-swipe flex items-start gap-3">
                                         <div class="flex justify-start items-center">
                                             <div class="contacts-icon">
@@ -439,12 +439,12 @@
 
                 <!-- Message Tapback - React -->
                 <div id="messages-app--msg-tapback-react" class="overlays artboard phone-4 h-full flex flex-col justify-end items-center hidden" data-close-onclick="false">
-                    <div class="new-contacts-wrapper bg-gray-100 w-full flex flex-col">
+                    <div class="overflow-page-wrapper tapback-react-wrapper bg-gray-100 w-full flex flex-col">
                         <div class="navbar-space text-lg">
                             <div class="bg-white flex justify-between items-center py-2 ios-primary-color">
                                 <button class="hide-overlay-btn justify-between items-center" data-overlay-id="messages-app--msg-tapback-react"> <i data-feather="chevron-left" class="ml-1"></i> </button>
                                 <span class="text-black font-semibold ml-8"> Add React </span>
-                                <span class="message-save-react ml-1 mr-3"> Save </span> 
+                                <span class="message-save-react ml-1 mr-3"> &nbsp; </span> 
                             </div>
                         </div>
 
@@ -484,6 +484,46 @@
                     </div>
                 </div>
 
+                <!-- Message Settings -->
+                <div id="messages-app--msg-settings" class="overlays artboard phone-4 h-full flex flex-col justify-end items-center hidden" data-close-onclick="false">
+                    <div class="overflow-page-wrapper message-settings-wrapper bg-gray-100 w-full flex flex-col">
+                        <div class="navbar-space text-lg">
+                            <div class="bg-white flex justify-between items-center py-2 ios-primary-color">
+                                <button class="hide-overlay-btn justify-between items-center" data-overlay-id="messages-app--msg-settings"> <i data-feather="chevron-left" class="ml-1"></i> </button>
+                                <span class="text-black font-semibold ml-8"> Message Settings </span>
+                                <span class="message-save-settings ml-1 mr-3 cursor-pointer"> Apply </span> 
+                            </div>
+                        </div>
+
+                        <div class="message-settings-form w-full flex flex-col">
+                            <div class="photo-container w-full flex flex-col justify-center items-center mb-5">
+                                <div class="contacts-icon">
+                                    <img id="message-photo-preview" class="" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                </div>
+                            </div>
+
+                            <div class="w-full mx-0 join join-vertical rounded-none">
+                                <div class="w-full join flex">
+                                    <input id="message-photo" type="text" class="input grow join-item message-settings-input" name="message-photo" placeholder="Custom Photo Link">
+                                    <button class="btn-preview-photo btn join-item" data-photo-input="message-photo" data-photo-preview="message-photo-preview">Preview</button>
+                                </div>
+                                <input type="text" class="message-nickname input join-item message-settings-input" name="nickname" placeholder="Nickname">
+                            </div>
+                            <small class="m-3 mb-0">Changes to photo and nickname won't presist.</small>
+
+                            <div class="w-full flex flex-col mt-5 px-3">
+                                <label class="font-semibold">Pin Message</label>
+                                <select class="pin-message-setting select select-bordered w-full message-settings-input" name="pin-message">
+                                    <option value="no">No</option>
+                                    <option value="yes">Yes</option>
+                                </select>
+                                <button class="delete-message btn btn-block bg-red-500 text-white font-medium mt-5">Delete Message</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message Options -->
                 <div id="messages-app--msg-options" class="overlays artboard phone-4 flex flex-col justify-end hidden"></div>
             </div>
         </div>

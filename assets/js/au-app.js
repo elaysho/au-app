@@ -143,6 +143,12 @@ var auapp = (function(){
             $(`#${overlayId}`).removeClass('hidden');
             $(`#${overlayId}`).addClass('active');
         }
+
+        switch(overlayId) {
+            case 'messages-app--msg-settings':
+                displayMessageSettings();
+            break;
+        }
     }
 
     function hideOverlay(event) {
@@ -168,8 +174,6 @@ var auapp = (function(){
 
         if(overlayTriggers.includes(true) == false) {
             event.preventDefault();
-            console.log('helllooy');
-
             return false;
         }
 
@@ -210,8 +214,6 @@ var auapp = (function(){
     }
 
     function overlaySwitcher(event) {
-        console.log($(this));
-
         showOverlay(null, $(this));
     }
 
@@ -245,10 +247,7 @@ var auapp = (function(){
                 return;
             }
 
-
             let contact = contacts[index] ?? null;
-            console.log(contact);
-
             if(contact != null) {
                 contact['contact-id'] = Date.now();
                 newContacts[contact['contact-id']] = contact;
@@ -498,8 +497,6 @@ var auapp = (function(){
                     $(cloneStack).append(child);
                 }
             });
-
-            // $('#messages-app--msg-tapback .message-body').append(cloneStack);
         });
     }
 
@@ -589,6 +586,7 @@ var auapp = (function(){
         $(messageListContainer).html('');
         $(messageListContainer).append(cloneItems);
 
+        let pinnedCount = 0;
         $.each(messages, function(i, message) {
             if(message['is-pinned'] == true) {
                 let messagePin = $(messageListContainer).find('.clone-item').last().clone();
@@ -606,8 +604,15 @@ var auapp = (function(){
                 // Append to message list container
                 $(messageListContainer).append(messagePin);
                 $(messagePin).on('click', onClickOfMessageThread);
+
+                pinnedCount++;
             }
         });
+
+        $(messageListContainer).addClass('mt-3 mb-5');
+        if(pinnedCount == 0) {
+            $(messageListContainer).removeClass('mt-3 mb-5');
+        }
 
         // Messages List
         // Clear message list on every call of displayMessagesList
@@ -641,7 +646,7 @@ var auapp = (function(){
                 $(messageList).find('.pin-message').on('click', pinMessage);
 
                 $(messageList).find('.delete-message').attr('data-message-id', message['contact']['contact-id']);
-                $(messageList).find('.delete-message').on('click', pinMessage);
+                $(messageList).find('.delete-message').on('click', deleteMessageThread);
 
                 $(messageList).attr('data-message-id', message['contact']['contact-id']);
                 $(messageList).find('.message-swipe').attr('data-message-id', message['contact']['contact-id']);
@@ -652,6 +657,72 @@ var auapp = (function(){
                 $(messageListContainer).append(messageList);
                 $(messageList).find('.message-swipe').on('click', onClickOfMessageThread);
             }
+        });
+    }
+
+    function displayMessageSettings() {
+        let messageId = $('#messages-app--msg').data('current-message-thread');
+        if(messageId == undefined || messageId == null) {
+            return;
+        }
+
+        let messages = localStorage.getItem('messages') ?? JSON.stringify({});
+        messages = JSON.parse(messages);
+
+        let messageThread = messages[messageId] ?? null;
+        if(messageThread == null) {
+            hideOverlayById('messages-app--msg-settings');
+        }
+
+        messageThread['contact']['contact-icon'] = messageThread['contact']['contact-icon'] ?? messageThread['contact']['contact-photo'];
+        $('#messages-app--msg-settings .contacts-icon img').attr('src', messageThread['contact']['contact-icon']);
+        $('#messages-app--msg-settings .btn-preview-photo').on('click', previewContactPhoto);
+
+        let nickname = messageThread['contact']['nickname'] ?? null;
+        $('#messages-app--msg-settings .message-nickname').val(nickname);
+
+        if(messageThread['is-pinned']) {
+            $('#messages-app--msg-settings .pin-message-setting').val('yes').change();
+        }
+
+        $('#messages-app--msg-settings .delete-message').attr('data-message-id', messageId);
+        $('#messages-app--msg-settings .delete-message').on('click', deleteMessageThread);
+
+        $('#messages-app--msg-settings .message-save-settings').attr('data-message-id', messageId);
+        $('#messages-app--msg-settings .message-save-settings').on('click', function() {
+            let messageId = $('#messages-app--msg').data('current-message-thread');
+            if(messageId == undefined || messageId == null) {
+                return;
+            }
+
+            let messages = localStorage.getItem('messages') ?? JSON.stringify({});
+            messages = JSON.parse(messages);
+    
+            let messageThread = messages[messageId] ?? null;
+            if(messageThread == null) {
+                hideOverlayById('messages-app--msg-settings');
+            }
+
+            // Save changes in Pin Message
+            let isPinned = $('#messages-app--msg-settings .pin-message-setting').val();
+            isPinned = isPinned == "yes" ? true : false;
+            messageThread['is-pinned'] = isPinned;
+
+            messages[messageId] = messageThread;
+            messages            = JSON.stringify(messages);
+            localStorage.setItem('messages', messages);
+
+            // Apply custom photo and nickname
+            let customPhoto    = $('#message-photo').val();
+            let customNickname = $('#messages-app--msg-settings .message-nickname').val();
+
+            $('#messages-app--msg .message-name span').html(customNickname);
+            if(customPhoto != '') {
+                $('#messages-app--msg .contacts-icon img').attr('src', customPhoto);
+            }
+
+            // Close message settings
+            hideOverlayById('messages-app--msg-settings');
         });
     }
 
@@ -695,21 +766,6 @@ var auapp = (function(){
         }
     }
 
-    function pinMessage(event) {
-        let messages = localStorage.getItem('messages') ?? JSON.stringify({});
-        messages = JSON.parse(messages);
-
-        let messageId = $(this).data('message-id');
-        let message = messages[messageId] ?? null;
-
-        if(message != null) {
-            message['is-pinned'] = true;
-            messages[messageId] = message;
-            messages = JSON.stringify(messages);
-            localStorage.setItem('messages', messages);
-        }
-    }
-
     function createMessageThread(contact, messages) {
         messages[contact['contact-id']] = {
             'contact': contact,
@@ -734,6 +790,40 @@ var auapp = (function(){
         });
 
         $('.message-body').scrollTop($('.message-body')[0].scrollHeight);
+    }
+
+    function pinMessage(event) {
+        let messages = localStorage.getItem('messages') ?? JSON.stringify({});
+        messages = JSON.parse(messages);
+
+        let messageId = $(this).data('message-id');
+        let message = messages[messageId] ?? null;
+
+        if(message != null) {
+            message['is-pinned'] = true;
+            messages[messageId] = message;
+            messages = JSON.stringify(messages);
+            localStorage.setItem('messages', messages);
+        }
+
+        displayMessagesList();
+    }
+
+    function deleteMessageThread(event) {
+        let messages = localStorage.getItem('messages') ?? JSON.stringify({});
+        messages = JSON.parse(messages);
+
+        let messageId = $(this).data('message-id');
+        let message = messages[messageId] ?? null;
+
+        if(message != null) {
+            delete messages[messageId];
+
+            messages = JSON.stringify(messages);
+            localStorage.setItem('messages', messages);
+        }
+        
+        displayMessagesList();
     }
 
     function sendMessage(event) {
