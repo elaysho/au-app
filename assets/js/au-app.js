@@ -791,16 +791,22 @@ var auapp = (function(){
         let chatId  = $('#messages-app--msg-tapback .display-chat-settings-btn').attr('data-chat-id');
         let message = getMessage(chatId);
 
+        console.log("Message: ");
+        console.log(message);
+
         // Display chat settings
         $('#messages-app--chat-settings .chat-content').removeClass('hidden');
+        $('#messages-app--chat-settings .change-chat-photo').addClass('hidden');
+
         $('#messages-app--chat-settings .chat-content').html(message['content']);
-        
+
         message['type'] = message['type'] ?? 'text';
         if(message['type'] == 'image') {
             $('#messages-app--chat-settings .chat-content').addClass('hidden');
+            $('#messages-app--chat-settings .change-chat-photo').removeClass('hidden');
         }
 
-        let delivered = message['content'] ? 'yes' : 'no';
+        let delivered = message['delivered'] ? 'yes' : 'no';
         let read      = message['read'] ? 'yes' : 'no';
         let readAt    = message['read-at'] != null ? message['read-at'] : null;
 
@@ -829,6 +835,12 @@ var auapp = (function(){
                 hideOverlayById('messages-app--chat-settings');
                 openMessageThread(messageId);
             }
+        });
+
+        $('#messages-app--chat-settings .change-chat-photo').on('click', function() {
+            $('#upload-photo').attr('data-store-photo-on-gallery', false);
+            $('#upload-photo').attr('data-append-photo-to', '#messages-app--chat-settings .chat-content');
+            $('#upload-photo').click();
         });
 
         $('#messages-app--chat-settings .chat-save-settings').attr('data-chat-id', chatId);
@@ -1445,14 +1457,25 @@ var auapp = (function(){
                     return;
                 }
 
+                // Append to textarea
+                console.log("Append To: " + $('#upload-photo').data('append-photo-to'));
+                if($('#upload-photo').data('append-photo-to') != "" && $('#upload-photo').data('append-photo-to') != null) {
+                    let appendElementId = $('#upload-photo').data('append-photo-to');
+                    let appendElement   = $(appendElementId);
+
+                    $(appendElement).html(reader.result);
+
+                    return;
+                }
+
                 sendMessage(reader.result, 'image');
+                $('#upload-photo').attr('data-store-photo-on-gallery', true);
+                $('#upload-photo').attr('data-append-photo-to', null);
             }, false);
             
             if(imgPath) {
                 reader.readAsDataURL(imgPath);
             }
-
-            $('#upload-photo').attr('data-store-photo-on-gallery', true);
         });
 
         $('.upload-photo-and-send').on('click', function() {
@@ -1464,7 +1487,7 @@ var auapp = (function(){
 
         $(document).click(function(event) {
             let bubbleElement = $(event.target);
-            if($(event.target).hasClass('from-them') == false || $(event.target).hasClass('from-me') == false) {
+            if($(event.target).hasClass('from-them') == false && $(event.target).hasClass('from-me') == false) {
                 bubbleElement = $(event.target).parent();
             }
 

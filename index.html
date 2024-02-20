@@ -72,7 +72,7 @@
                                 <div class="flex flex-col justify-center items-center px-1">
                                     <label for="upload-photo" class="w-full flex flex-col justify-center m-0 cursor-pointer">
                                         <img src="assets/imgs/iphone/icons/camera.svg">
-                                        <input type="file" id="upload-photo" class="" data-store-photo-on-gallery="true">
+                                        <input type="file" id="upload-photo" class="" data-store-photo-on-gallery="true" data-append-photo-to="">
                                         <span class="app-name mt-1 text-center">Camera</span>
                                     </label>
                                 </div>
@@ -605,7 +605,14 @@
                             </div>
 
                             <div class="w-full flex flex-col mt-5 px-3">
-                                <label class="font-semibold">Delivered</label>
+                                <div class="w-full change-chat-photo hidden">
+                                    <label class="font-semibold">Photo</label>
+                                    <button class="btn btn-block bg-blue-500 hover:bg-blue-400 text-white font-medium">
+                                        <i data-feather="camera" class="mr-2"></i>Replace Photo
+                                    </button>
+                                </div>
+
+                                <label class="font-semibold mt-3">Delivered</label>
                                 <select class="delivered-chat-setting select select-bordered w-full chat-settings-input" name="delivered-chat">
                                     <option value="no">No</option>
                                     <option value="yes">Yes</option>
@@ -620,7 +627,9 @@
                                     <input type="text" class="read-chat-at input join-item chat-settings-input" name="read-chat-at" placeholder="Read At">
                                 </div>
 
-                                <button class="delete-chat btn btn-block bg-red-500 hover:bg-red-400 text-white font-medium mt-10">Delete Chat</button>
+                                <button class="delete-chat btn btn-block bg-red-500 hover:bg-red-400 text-white font-medium mt-10">
+                                    <i data-feather="trash" class="mr-2"></i>Delete Chat
+                                </button>
                             </div>
                         </div>
                     </div>
