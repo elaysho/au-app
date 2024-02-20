@@ -155,7 +155,8 @@ body {
 #contacts-app--add-new.overlays,
 #messages-app--msg-tapback-react.overlays,
 #messages-app--msg-settings.overlays,
-#messages-app--chat-settings.overlays {
+#messages-app--chat-settings.overlays,
+#messages-app--msg-choose-photo.overlays {
     background: rgba(0, 0, 0, 0.13);
     backdrop-filter: unset!important;
     -webkit-backdrop-filter: unset!important;
@@ -300,18 +301,40 @@ body {
     border-bottom: 1px #e7e7e7 solid;
 }
 
-.contacts-icon {
+.contacts-icon,
+.icon {
     height: 75px;
     width: 75px;
     border-radius: 50%;
     overflow: hidden;
 }
 
+.photos-icon, 
+.send-photo-btn {
+    position: relative;
+    height: 100px;
+    width: 100px;
+    overflow: hidden;
+    border-radius: unset!important;
+}
+
+.photos-icon img {
+    object-fit: contain!important;
+}
+
+.photos-icon .selected-photo,
+.send-photo-btn .selected-photo {
+    position: absolute;
+    right: 5px;
+    bottom: 20px;
+}
+
 .contacts-icon img {
     object-fit: contain!important;
 }
 
-.app-background .navbar-space .contacts-search-btns .feather {
+.app-background .navbar-space .contacts-search-btns .feather,
+.photos-app .navbar-space .feather {
     height: 16px!important;
     width: 16px!important;
 }
@@ -332,7 +355,7 @@ body {
     width: 24px!important;
 }
 
-#upload-contact-photo {
+#upload-photo {
     opacity: 0;
     position: absolute;
     z-index: -1;
@@ -540,6 +563,12 @@ p.from-me ~ p.from-me:not(:last-child) {
 
 p.from-me ~ p.from-me:last-child {
     margin-bottom: 0.5rem;
+}
+
+.message-body .from-me.image,
+.message-body .from-them.image {
+    overflow: hidden!important;
+    padding: unset!important;
 }
 
 p.from-them {
@@ -880,4 +909,13 @@ input[type="checkbox"].ios8-switch-lg + label:hover:after {
 
 input[type="checkbox"].ios8-switch-lg:checked + label:after {
     margin-left: 20px; /* x*2 */
+}
+
+/**
+ *
+ */
+
+ .message-options .icon {
+    height: 34px;
+    width: 34px;
 }

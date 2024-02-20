@@ -102,12 +102,14 @@ var auapp = (function(){
                 displayMessagesList();
                 displayContacts();
             break;
+            case 'photos-app':
+                displayPhotos();
+            break;
             default:
-                if(currentAppId === 'messages-app--msg') {
+                if(currentAppId === 'messages-app--msg' && (appId !== 'messages-app--msg' && appId !== '')) {
                     closeMessageThread($('#messages-app--msg'));
+                    clearInterval(textMsgFieldInterval);
                 }
-
-                clearInterval(textMsgFieldInterval);
             break;
         }
     }
@@ -150,6 +152,9 @@ var auapp = (function(){
             break;
             case 'messages-app--chat-settings':
                 displayChatSettings();
+            break;
+            case 'messages-app--msg-choose-photo':
+                displayPhotos('messages-app--msg-choose-photo');
             break;
         }
     }
@@ -417,6 +422,49 @@ var auapp = (function(){
 
         let contactPhotoPrevId  = $(this).data('photo-preview');
         $(`#${contactPhotoPrevId}`).attr('src', contactPhotoLink);
+    }
+
+    // Photos
+    function displayPhotos(container = 'photos-app') {
+        let photos = localStorage.getItem('photos') ?? JSON.stringify({});
+        photos = JSON.parse(photos);
+
+        let cloneItems = $(`#${container} .photo-gallery`).find('.clone-item').clone();
+        $(`#${container} .photo-gallery`).html('');
+        $(`#${container} .photo-gallery`).append(cloneItems);
+
+        $.each(photos, function(i, photo) {
+            let photoDisplay = $(`#${container} .photo-gallery`).find('.clone-item').clone();
+
+            $(photoDisplay).attr('data-photo-id', i);
+            $(photoDisplay).attr('data-selected-photo', false);
+
+            $(photoDisplay).find('img').attr('src', photo);
+            $(photoDisplay).find('img').attr('data-photo-id', i);
+            $(photoDisplay).removeClass('clone-item');
+            $(photoDisplay).removeClass('hidden');
+
+            $(`#${container} .photo-gallery`).append(photoDisplay);
+            $(`#${container} .photo-gallery`).find('.send-photo-btn').on('click', function() {
+                if(container == 'messages-app--msg-choose-photo') {
+                    $(`#${container} .photo-gallery`).find('.selected-photo').addClass('hidden');
+                    $(`#${container} .photo-gallery`).find('.send-photo-btn').attr('data-selected-photo', 'false');
+
+                    $(this).find('.selected-photo').removeClass('hidden');
+                    $(this).attr('data-selected-photo', 'true');
+
+                }
+            });
+        });
+
+        $(`#${container}`).find('.choose-photo-btn').on('click', function() {
+            let selectedPhoto   =  $(`#${container} .photo-gallery`).find('[data-selected-photo="true"');
+            let selectedPhotoId = $(selectedPhoto).data('photo-id');
+
+            sendMessage(getPhotoFromGallery(selectedPhotoId), 'image');
+            hideOverlayById(container);
+        });
+        
     }
 
     // Messages
@@ -744,7 +792,13 @@ var auapp = (function(){
         let message = getMessage(chatId);
 
         // Display chat settings
+        $('#messages-app--chat-settings .chat-content').removeClass('hidden');
         $('#messages-app--chat-settings .chat-content').html(message['content']);
+        
+        message['type'] = message['type'] ?? 'text';
+        if(message['type'] == 'image') {
+            $('#messages-app--chat-settings .chat-content').addClass('hidden');
+        }
 
         let delivered = message['content'] ? 'yes' : 'no';
         let read      = message['read'] ? 'yes' : 'no';
@@ -909,45 +963,57 @@ var auapp = (function(){
         displayMessagesList();
     }
 
-    function sendMessage(event) {
-        if($('.message-textfield').val() !== '') {
-            let sender   = $('.sender-switcher').data('sender');
-            let content  = $('.message-textfield').val();
-            let date     = (new Date()).toLocaleDateString(undefined, {
-                month: 'short',
-                day: '2-digit',
-                year: 'numeric',
-            });
-            let time     = (new Date()).toLocaleTimeString(undefined, {
-                hour:   '2-digit',
-                hour12:  true,
-                minute: '2-digit',
-            });
+    function onSendMessage(event) {
+        sendMessage($('.message-textfield').val(), 'text');
+    }
 
-            let messageThreadId = $('#messages-app--msg').data('current-message-thread');
-            let bubble = {
-                'id': Date.now(),
-                'message-thread-id': messageThreadId,
-                'sender': sender,
-                'content': content,
-                'date': date,
-                'time': time,
-                'delivered': false,
-                'read': false,
-                'read-at': null,
-                'reacts': {
-                    'from-me': null,
-                    'from-them': null,
-                },
-                'reply': false,
-                'reply-to': null,
-            };
+    function sendMessage(content = null, type = 'text') {
+        if(content == null) {
+            return;
+        }
 
-            // Store and display chat bubble
-            storeChatBubble(messageThreadId, bubble);
-            displayChatBubble(bubble);
+        let sender   = $('.sender-switcher').data('sender');
+        let date     = (new Date()).toLocaleDateString(undefined, {
+            month: 'short',
+            day: '2-digit',
+            year: 'numeric',
+        });
+        let time     = (new Date()).toLocaleTimeString(undefined, {
+            hour:   '2-digit',
+            hour12:  true,
+            minute: '2-digit',
+        });
 
-            // Clear text field
+        let messageThreadId = $('#messages-app--msg').data('current-message-thread');
+        if(messageThreadId == undefined || messageThreadId == null) {
+            return;
+        }
+
+        let bubble = {
+            'id': Date.now(),
+            'message-thread-id': messageThreadId,
+            'sender': sender,
+            'content': content,
+            'date': date,
+            'time': time,
+            'delivered': false,
+            'read': false,
+            'read-at': null,
+            'reacts': {
+                'from-me': null,
+                'from-them': null,
+            },
+            'reply': false,
+            'reply-to': null,
+            'type': type
+        };
+
+        // Store and display chat bubble
+        storeChatBubble(messageThreadId, bubble);
+        displayChatBubble(bubble);
+
+        // Clear text field
+        if(type ==='text') {
             $('#messages-app--msg #message-textfield').val('');
         }
     }
@@ -962,6 +1028,11 @@ var auapp = (function(){
             messageThread['last-message-date'] = bubble['date'];
             messageThread['last-message-time'] = bubble['time'];
             messageThread['preview-message']   = bubble['content'];
+
+            bubble['type'] = bubble['type'] ?? 'text';
+            if(bubble['type'] == 'image') {
+                messageThread['preview-message'] = 'Attachment: 1';
+            }
         }
 
         messages[messageThreadId] = messageThread;
@@ -991,7 +1062,23 @@ var auapp = (function(){
         let bubbleElement = $("<p>");
         $(bubbleElement).addClass(bubble['sender']);
         $(bubbleElement).attr('data-chat-id', bubble['id']);
-        $(bubbleElement).html(bubble['content']);
+
+        bubble['type'] = bubble['type'] ?? 'text';
+        if(bubble['type'] == 'text') {
+            $(bubbleElement).html(bubble['content']);
+        }
+
+        if(bubble['type'] == 'image') {
+            if(bubble['content'] == null) {
+                return false;
+            }
+
+            let image = $("<img />");
+            $(image).attr('src', bubble['content']);
+
+            $(bubbleElement).append(image);
+            $(bubbleElement).addClass('image').addClass('no-tail');
+        }
 
         // Remove tail of previous chat buble
         if($(stackedMessages).find('p').length > 0) {
@@ -1071,6 +1158,13 @@ var auapp = (function(){
             'react': react,
             'reactFrom': reactFrom,
         };
+    }
+
+    function getPhotoFromGallery(photoId) {
+        let photos = localStorage.getItem('photos') ?? JSON.stringify({});
+        photos = JSON.parse(photos);
+
+        return photos[photoId] ?? null;
     }
 
     function displayBubbleReact(bubble, bubbleElement, react, reactFrom) {
@@ -1325,16 +1419,59 @@ var auapp = (function(){
         $('.message-textfield').on('focus', onMessageTextFieldFocus);
         $('.message-textfield').on('focusout', onMessageTextFieldFocusOut);
         $('.sender-switcher').on('click', messagesSenderSwitcher);
-        $('.send-message-btn').on('click', sendMessage);
+        $('.send-message-btn').on('click', onSendMessage);
         $('.react-select').on('click', updateChatBubbleReact);
         $('.show-react-bbl-btn').on('click', showReactBubble);
 
         $('.export-message-btn').on('click', exportMessage);
 
+        $('#upload-photo').on('change', function() {
+            const imgPath = document.querySelector('input[type=file]').files[0];
+            const reader  = new FileReader();
+
+            reader.addEventListener("load", function () {
+                // Convert image file to base64 string and save to localStorage
+                console.log("Store Photo: " + $('#upload-photo').data('store-photo-on-gallery'));
+                if($('#upload-photo').data('data-store-photo-on-gallery') == true) {
+                    let photoId = Date.now();
+
+                    let photos  = localStorage.getItem('photos') ?? JSON.stringify({});
+                    photos = JSON.parse(photos);
+
+                    photos[photoId] = reader.result;
+                    photos = JSON.stringify(photos);
+                    localStorage.setItem("photos", photos);
+
+                    return;
+                }
+
+                sendMessage(reader.result, 'image');
+            }, false);
+            
+            if(imgPath) {
+                reader.readAsDataURL(imgPath);
+            }
+
+            $('#upload-photo').attr('data-store-photo-on-gallery', true);
+        });
+
+        $('.upload-photo-and-send').on('click', function() {
+            $('#upload-photo').attr('data-store-photo-on-gallery', false);
+            $('#upload-photo').click();
+
+            hideOverlayById('messages-app--msg-options');
+        });
+
         $(document).click(function(event) {
-            if($(event.target).hasClass('from-them') || $(event.target).hasClass('from-me')) {
-                if($(event.target).hasClass('sender-switcher') == false) {
-                    let chatId = $(event.target).data('chat-id');
+            let bubbleElement = $(event.target);
+            if($(event.target).hasClass('from-them') == false || $(event.target).hasClass('from-me') == false) {
+                bubbleElement = $(event.target).parent();
+            }
+
+            if($(bubbleElement).hasClass('from-them') || $(bubbleElement).hasClass('from-me')) {
+                if($(bubbleElement).hasClass('sender-switcher') == false) {
+                    let chatId = $(bubbleElement).data('chat-id');
+
                     showMessageTapbackOverlay(chatId);
                 }
             }

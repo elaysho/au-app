@@ -67,19 +67,22 @@
 
                                 <div class="app-icon flex flex-col justify-center items-center px-1" data-screen-id="contacts-app">
                                     <img src="assets/imgs/iphone/icons/contacts.svg">
-                                    <span class="app-name mt-1">Contacts</span>
+                                    <span class="app-name mt-1 text-center">Contacts</span>
                                 </div>
-                                <div class="app-icon flex flex-col justify-center items-center px-1" data-screen-id="">
-                                    <img src="assets/imgs/iphone/icons/camera.svg">
-                                    <span class="app-name mt-1">Camera</span>
+                                <div class="flex flex-col justify-center items-center px-1">
+                                    <label for="upload-photo" class="w-full flex flex-col justify-center m-0 cursor-pointer">
+                                        <img src="assets/imgs/iphone/icons/camera.svg">
+                                        <input type="file" id="upload-photo" class="" data-store-photo-on-gallery="true">
+                                        <span class="app-name mt-1 text-center">Camera</span>
+                                    </label>
                                 </div>
-                                <div class="app-icon flex flex-col justify-center items-center px-1" data-screen-id="">
+                                <div class="app-icon flex flex-col justify-center items-center px-1" data-screen-id="photos-app">
                                     <img src="assets/imgs/iphone/icons/photos.svg">
-                                    <span class="app-name mt-1">Photos</span>
+                                    <span class="app-name mt-1 text-center">Photos</span>
                                 </div>
                                 <div class="app-icon flex flex-col justify-center items-center px-1" data-screen-id="">
                                     <img src="assets/imgs/iphone/icons/settings.svg">
-                                    <span class="app-name mt-1">Settings</span>
+                                    <span class="app-name mt-1 text-center">Settings</span>
                                 </div>
                             </div>
 
@@ -162,6 +165,39 @@
                         </div>
                     </section>
 
+                    <!-- Photos -->
+                    <section id="photos-app" class="artboard artboard-demo phone-4 flex flex-col justify-end app-background photos-app hidden">
+                        <div class="navbar-space flex flex-col justify-end">
+                            <div class="flex justify-between items-center ios-primary-color">
+                                <span class="app-icon flex justify-between items-center" data-screen-id="homescreen"> <i data-feather="chevron-left" class="ml-1"></i> Home </span>
+                                <span class=""> <i data-feather="trash" class="mr-2"></i> </span> 
+                            </div>
+                            <div class="px-4">
+                                <div class="text-3xl font-semibold">Photos</div>
+                            </div>
+                        </div>
+
+                        <div class="w-full h-80 bg-white mt-3 grow flex flex-col">
+                            <div class="photo-gallery grid grid-cols-3 gap-0 items-center mt-2 mb-5">
+                                <div class="w-full photos-icon clone-item hidden">
+                                    <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                    <input type="checkbox" checked="checked" class="checkbox checkbox-xs selected-photo hidden" disabled/>
+                                </div>
+                            </div>
+
+                            <div class="photos-list-empty bg-transparent text-center py-10 hidden">
+                                There are no photos to display.
+                            </div>
+                        </div>
+
+                        <!-- Home Indicator -->
+                        <div class="app-icon w-full h-10 flex justify-end items-end bg-white" data-screen-id="homescreen">
+                            <div class="w-40 mx-auto mb-2">
+                                <img src="assets/imgs/iphone/homescreen/Home-Indicator.png">
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- Contacts - New -->
                     <div id="contacts-app--add-new" class="overlays artboard phone-4 h-full flex flex-col justify-end items-center hidden" data-close-onclick="false">
                         <div class="new-contacts-wrapper bg-gray-100 w-full flex flex-col">
@@ -228,7 +264,7 @@
                                         <!-- <span class="export-message-btn flex justify-end items-center ios-primary-color cursor-pointer" data-export-id=".export-message-btn" data-export-container="#messages-app--msg .message-upper-right-actions"> <i data-feather="download" class="mr-4"></i> </span> -->
                                     </div>
                                 </div>
-                                <span class="overlay-btn message-name text-xs font-light mx-auto mt-1 mb-2 flex justify-center items-center cursor-pointer" data-overlay-id="messages-app--msg-settings"> 
+                                <span class="overlay-btn message-name text-xs mx-auto mt-1 mb-2 flex justify-center items-center cursor-pointer" data-overlay-id="messages-app--msg-settings"> 
                                     <span class="ml-1">Noah</span> <i data-feather="chevron-right" class=""></i>
                                 </span>
                             </div>
@@ -239,6 +275,11 @@
                             <div class="message-body h-full px-4 pt-2 flex flex-col justify-start" data-overlay-id="messages-app--msg-tapback">
                                 <div class="stacked-messages stacked-messages-from-them flex flex-col flex-start clone-item hidden"></div>
                                 <div class="stacked-messages stacked-messages-from-me flex flex-col flex-end clone-item hidden"></div>
+                                <!-- <div class="stacked-messages stacked-messages-from-me flex flex-col flex-end">
+                                    <p class="from-me no-tail image">
+                                        <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                    </p>
+                                </div> -->
                             </div>
 
                             <!-- Message Text Field -->
@@ -429,6 +470,7 @@
                                     <button class="overlay-btn btn btn-block bg-dark bg-opacity-25 text-sm join-item" data-overlay-id="messages-app--msg-tapback-react">React <i data-feather="heart" class=""></i></button>
                                     <button class="show-react-bbl-btn btn btn-block bg-dark bg-opacity-25 text-sm join-item">Show React <br>Bubble <i data-feather="message-circle" class=""></i></button>
                                     <button class="overlay-btn display-chat-settings-btn btn btn-block bg-dark bg-opacity-25 text-sm join-item" data-overlay-id="messages-app--chat-settings">Edit <i data-feather="edit" class=""></i></button>
+                                    <button class="btn btn-block bg-dark bg-opacity-25 text-sm join-item">Unsend <i data-feather="send" class=""></i></button>
                                     <button class="btn btn-block bg-dark bg-opacity-25 text-sm join-item">Reply <i data-feather="send" class=""></i></button>
                                 </div>
                             </div>
@@ -585,7 +627,66 @@
                 </div>
 
                 <!-- Message Options -->
-                <div id="messages-app--msg-options" class="overlays artboard phone-4 flex flex-col justify-end hidden"></div>
+                <div id="messages-app--msg-options" class="overlays artboard phone-4 h-full flex flex-col justify-end hidden">
+                    <div class="grow"></div>
+                    <div class="grow"></div>
+                    <div class="grow"></div>
+                    <div class="grow"></div>
+                    <div class="grow"></div>
+                    <div class="w-full grow grid-cols-2 gap-3 px-10">
+                        <div class="message-options">
+                            <div class="upload-photo-and-send message-option flex flex-start items-center my-2 cursor-pointer">
+                                <i data-feather="camera" class="mr-8"></i>
+                                <span>Camera</span>
+                            </div>
+                            <div class="overlay-btn send-photo message-option flex flex-start items-center my-2 cursor-pointer" data-overlay-id="messages-app--msg-choose-photo">
+                                <i data-feather="image" class="mr-8"></i>
+                                <span>Photo</span>
+                            </div>
+                            <div class="message-option flex flex-start items-center my-2 cursor-pointer">
+                                <i data-feather="type" class="mr-8"></i>
+                                <span>Text Separator</span>
+                            </div>
+                            <div class="hide-overlay-btn message-option flex flex-start items-center my-2 cursor-pointer" data-overlay-id="messages-app--msg-options">
+                                <i data-feather="minimize" class="mr-8"></i>
+                                <span>Close</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="messages-app--msg-choose-photo" class="overlays artboard phone-4 h-full flex flex-col justify-end hidden" data-close-onclick="false">
+                    <div class="overflow-page-wrapper choose-photo-wrapper bg-gray-100 w-full flex flex-col">
+                        <div class="navbar-space text-lg">
+                            <div class="bg-white flex justify-between items-center py-2 ios-primary-color">
+                                <button class="hide-overlay-btn justify-between items-center" data-overlay-id="messages-app--msg-choose-photo"> <i data-feather="chevron-left" class="ml-1"></i> </button>
+                                <span class="text-black font-semibold ml-8"> Choose Photo </span>
+                                <span class="choose-photo-btn ml-1 mr-3 cursor-pointer"> Choose </span> 
+                            </div>
+                        </div>
+
+                        <div class="w-full h-full bg-white grow flex flex-col">
+                            <div class="photo-gallery grid grid-cols-3 gap-0 items-center mt-2 mb-5 ">
+                                <div class="w-full send-photo-btn cursor-pointer clone-item hidden">
+                                    <img class="" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                    <input type="checkbox" checked="checked" class="checkbox checkbox-xs selected-photo hidden" disabled/>
+                                </div>
+                            </div>
+
+                            <div class="photos-list-empty bg-transparent text-center py-10 hidden">
+                                There are no photos to display.
+                            </div>
+                        </div>
+
+                        <!-- Home Indicator -->
+                        <div class="app-icon w-full h-10 flex justify-end items-end bg-white" data-screen-id="homescreen">
+                            <div class="w-40 mx-auto mb-2">
+                                <img src="assets/imgs/iphone/homescreen/Home-Indicator.png">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
