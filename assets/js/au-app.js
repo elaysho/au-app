@@ -1,4 +1,5 @@
-var auapp = (function(){
+var auapp = (function() {
+    let firebase, storageRef;
 
     let timeInterval = null;
     let dateInterval = null;
@@ -841,6 +842,8 @@ var auapp = (function(){
             $('#upload-photo').attr('data-store-photo-on-gallery', false);
             $('#upload-photo').attr('data-append-photo-to', '#messages-app--chat-settings .chat-content');
             $('#upload-photo').click();
+
+            console.log($('#upload-photo').data('store-photo-on-gallery'));
         });
 
         $('#messages-app--chat-settings .chat-save-settings').attr('data-chat-id', chatId);
@@ -1204,6 +1207,7 @@ var auapp = (function(){
         let reactIcon  = $(reactWrapper).find('.react-icon');
         let width      = $(bubbleElement).innerWidth() - 15;
         let height     = ($(bubbleElement).innerHeight() - $(reactIcon).innerHeight()) / 3;
+
         console.log("Height: " + height);
         console.log("Width: " + width);
 
@@ -1443,45 +1447,66 @@ var auapp = (function(){
 
             reader.addEventListener("load", function () {
                 // Convert image file to base64 string and save to localStorage
-                console.log("Store Photo: " + $('#upload-photo').data('store-photo-on-gallery'));
-                if($('#upload-photo').data('data-store-photo-on-gallery') == true) {
+                console.log("Store Photo: ", $('#upload-photo').data('store-photo-on-gallery'));
+                if($('#upload-photo').data('store-photo-on-gallery') == true) {
                     let photoId = Date.now();
 
-                    let photos  = localStorage.getItem('photos') ?? JSON.stringify({});
-                    photos = JSON.parse(photos);
+                    // let photos  = localStorage.getItem('photos') ?? JSON.stringify({});
+                    // photos = JSON.parse(photos);
 
-                    photos[photoId] = reader.result;
-                    photos = JSON.stringify(photos);
-                    localStorage.setItem("photos", photos);
+                    // photos[photoId] = reader.result;
+                    // photos = JSON.stringify(photos);
+                    // localStorage.setItem("photos", photos);
 
-                    return;
+                    let photoRef = storageRef.child(`messages/${photoId}`);
+                    photoRef.putString(reader.result, 'data_url').then((snapshot) => {
+                        console.log('Uploaded a data_url string!');
+                        console.log(snapshot);
+                      });
+                      
+
+                    console.log("Stored photo with ID: " + photoId);
+
+                    $('#upload-photo').attr('data-store-photo-on-gallery', true);
+                    $('#upload-photo').attr('data-append-photo-to', '');
                 }
 
                 // Append to textarea
-                console.log("Append To: " + $('#upload-photo').data('append-photo-to'));
-                if($('#upload-photo').data('append-photo-to') != "" && $('#upload-photo').data('append-photo-to') != null) {
-                    let appendElementId = $('#upload-photo').data('append-photo-to');
-                    let appendElement   = $(appendElementId);
+                console.log("Append To: ", $('#upload-photo').data('append-photo-to'));
+                if($('#upload-photo').data('data-store-photo-on-gallery') != true) {
+                    if($('#upload-photo').data('append-photo-to') != "") {
+                        let appendElementId = $('#upload-photo').data('append-photo-to');
+                        let appendElement   = $(appendElementId);
 
-                    $(appendElement).html(reader.result);
+                        $(appendElement).html(reader.result);
+                        console.log("Updated photo!");
+                    }
 
-                    return;
+                    $('#upload-photo').attr('data-store-photo-on-gallery', true);
+                    $('#upload-photo').attr('data-append-photo-to', '');
                 }
 
-                sendMessage(reader.result, 'image');
-                $('#upload-photo').attr('data-store-photo-on-gallery', true);
-                $('#upload-photo').attr('data-append-photo-to', null);
+                // Send photo as chat
+                if($('#upload-photo').data('store-photo-on-gallery') != true && $('#upload-photo').data('append-photo-to') == "") {
+                    console.log('Sending photo as chat..');
+                    sendMessage(reader.result, 'image');
+
+                    $('#upload-photo').attr('data-store-photo-on-gallery', true);
+                    $('#upload-photo').attr('data-append-photo-to', '');
+                }
             }, false);
             
             if(imgPath) {
                 reader.readAsDataURL(imgPath);
             }
+
+            $('#upload-photo').attr('data-store-photo-on-gallery', true);
+            $('#upload-photo').attr('data-append-photo-to', '');
         });
 
         $('.upload-photo-and-send').on('click', function() {
             $('#upload-photo').attr('data-store-photo-on-gallery', false);
             $('#upload-photo').click();
-
             hideOverlayById('messages-app--msg-options');
         });
 
@@ -1504,6 +1529,10 @@ var auapp = (function(){
     function initSettings() {
         let fontSize = localStorage.getItem('font-size') ?? 16;
         $('body').attr('style', `font-size: ${fontSize}px!important`);
+    }
+
+    function requestDb() {
+        
     }
 
     function init() {

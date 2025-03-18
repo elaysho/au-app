@@ -260,6 +260,11 @@ body {
     height: 130px!important;
 }
 
+.photos-app .navbar-space {
+    width: 100%;
+    height: 100px!important;
+}
+
 .app-background .navbar-space .feather,
 .new-msg-options-wrapper .navbar-space .feather {
     width: 24px!important;
