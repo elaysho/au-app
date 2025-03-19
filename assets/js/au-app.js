@@ -266,10 +266,9 @@ var auapp = (function() {
         }, 1000);
     }
 
-    function displayContacts() {
+    async function displayContacts() {
         // Replace this with contacts loaded from local storage
-        let contacts = localStorage.getItem('contacts') ?? JSON.stringify({});
-        contacts = JSON.parse(contacts);
+        let contacts = await db.getAll('contacts');
 
         // Sort contacts alphabetically
         let sortedContacts = [];
@@ -350,9 +349,9 @@ var auapp = (function() {
         // Display main contact
         $('#contacts-app .owner-card').addClass('hidden');
 
-        let mainContactId = localStorage.getItem('main-account-id');
+        let mainContactId = await db.get('settings', 'main_account_id') ?? null;
         if(mainContactId != null) {
-            let mainContact = getContactDetails(mainContactId);
+            let mainContact = await getContactDetails(mainContactId.val);
 
             $('#contacts-app .owner-card .contacts-icon').find('img').attr('src', mainContact['contact-photo']);
             $('#contacts-app .owner-card .contact-name').html(mainContact['contact-name']);
@@ -360,11 +359,8 @@ var auapp = (function() {
         }
     }
 
-    function getContactDetails(contactId) {
-        let contacts = localStorage.getItem('contacts') ?? JSON.stringify({});
-        contacts = JSON.parse(contacts);
-        
-        return contacts[contactId] ?? null;
+    async function getContactDetails(contactId) {
+        return await db.get('contacts', contactId);
     }
 
     async function addNewContact(event) {
@@ -391,27 +387,27 @@ var auapp = (function() {
         }
 
         // Other infos
-        newContact['contact-id']   = Date.now();
+        newContact['id'] = Date.now();
+        newContact['contact-id']   = newContact['id'];
         newContact['contact-name'] = newContact['first-name'] + ' ' + newContact['last-name'];
 
         // Convert main-account value to bool
         newContact['main-account'] = newContact['main-account'] == 'yes' ? true : false;
 
-        // Store new contact
-        let existingContacts = localStorage.getItem('contacts') ?? JSON.stringify({});
-            existingContacts = JSON.parse(existingContacts);
+        // Get contact photo
+        newContact['contact-photo'] = $('#new-contact-photo-preview').attr('src');
 
-        existingContacts[newContact['contact-id']] = newContact;
-        existingContacts = JSON.stringify(existingContacts);
-        localStorage.setItem('contacts', existingContacts);
+        await db.transaction('contacts', 'readwrite').objectStore('contacts').add(newContact);
 
         // Store main account's id
         if(newContact['main-account']) {
-            localStorage.setItem('main-account-id', newContact['contact-id']);
+            await db.put('settings', {id: 'main_account_id', val: newContact['contact-id']});
         }
 
         // Clear photo preview
         $('#new-contact-photo-preview').attr('src', 'assets/imgs/iphone/contacts/sample-icon.png');
+        $('#new-contact-photo-preview').addClass('Hidden');
+        $('.contacts-initials').text('AB');
 
         // Go back to Contacts App
         switchApp('contacts-app');
@@ -427,7 +423,7 @@ var auapp = (function() {
 
     // Photos
     async function displayPhotos(container = 'photos-app') {
-        let photos = await db.transaction('photos').objectStore('photos').getAll();
+        let photos = await db.getAll('photos');
 
         let cloneItems = $(`#${container} .photo-gallery`).find('.clone-item').clone();
         $(`#${container} .photo-gallery`).html('');
@@ -1426,7 +1422,19 @@ var auapp = (function() {
         const reader  = new FileReader();
 
         reader.addEventListener("load", async function () {
-            // Convert image file to base64 string and save to localStorage
+            // New contact photo preview
+            if($('#upload-photo').data('new-contact-photo-prewiew') == true) {
+                $('#new-contact-photo-preview').attr('src', reader.result);
+                $('#new-contact-photo-preview').removeClass('hidden');
+
+                $('#upload-photo').attr('data-store-photo-on-gallery', true);
+                $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
+                $('#upload-photo').attr('data-append-photo-to', '');
+
+                return;
+            }
+
+            // Convert image file to base64 string and save to IndexedDB
             console.log("Store Photo: ", $('#upload-photo').data('store-photo-on-gallery'));
             if($('#upload-photo').data('store-photo-on-gallery') == true) {
                 let photoId = Date.now();
@@ -1438,12 +1446,15 @@ var auapp = (function() {
                 await db.transaction('photos', 'readwrite').objectStore('photos').add(photo);
 
                 $('#upload-photo').attr('data-store-photo-on-gallery', true);
+                $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
                 $('#upload-photo').attr('data-append-photo-to', '');
+
+                return;
             }
 
             // Append to textarea
             console.log("Append To: ", $('#upload-photo').data('append-photo-to'));
-            if($('#upload-photo').data('data-store-photo-on-gallery') != true) {
+            if($('#upload-photo').data('store-photo-on-gallery') != true) {
                 if($('#upload-photo').data('append-photo-to') != "") {
                     let appendElementId = $('#upload-photo').data('append-photo-to');
                     let appendElement   = $(appendElementId);
@@ -1453,7 +1464,10 @@ var auapp = (function() {
                 }
 
                 $('#upload-photo').attr('data-store-photo-on-gallery', true);
+                $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
                 $('#upload-photo').attr('data-append-photo-to', '');
+
+                return;
             }
 
             // Send photo as chat
@@ -1464,14 +1478,15 @@ var auapp = (function() {
                 $('#upload-photo').attr('data-store-photo-on-gallery', true);
                 $('#upload-photo').attr('data-append-photo-to', '');
             }
+
+            $('#upload-photo').attr('data-store-photo-on-gallery', true);
+            $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
+            $('#upload-photo').attr('data-append-photo-to', '');
         }, false);
         
         if(imgPath) {
             reader.readAsDataURL(imgPath);
         }
-
-        $('#upload-photo').attr('data-store-photo-on-gallery', true);
-        $('#upload-photo').attr('data-append-photo-to', '');
     }
 
     // Events & Initialization
@@ -1489,7 +1504,7 @@ var auapp = (function() {
                 let firstName = $('[name="first-name"]').val()[0] ?? '';
                 let lastName = $('[name="last-name"]').val()[0] ?? '';
                 let initials = firstName.toUpperCase() + lastName.toUpperCase();
-                
+
                 if(initials == '') {
                     initials = 'AB';
                 }
@@ -1516,6 +1531,12 @@ var auapp = (function() {
             $('#upload-photo').attr('data-store-photo-on-gallery', false);
             $('#upload-photo').click();
             hideOverlayById('messages-app--msg-options');
+        });
+
+        $('.upload-contact-photo-btn').on('click', function() {
+            $('#upload-photo').attr('data-store-photo-on-gallery', false);
+            $('#upload-photo').attr('data-new-contact-photo-prewiew', true);
+            $('#upload-photo').click();
         });
 
         $(document).click(function(event) {
@@ -1548,20 +1569,18 @@ var auapp = (function() {
                     db.createObjectStore('settings', {keyPath: 'id'});
 
                     // Add default font size
-                    const request = transaction.objectStore('settings')
+                    transaction.objectStore('settings')
                         .add({
                             id: 'font_size',
                             val: 16
                         });
 
-                    // Check request result
-                    request.onsuccess = function() {
-                        console.log("Font size settings initialized.", request.result);
-                    };
-                    
-                    request.onerror = function() {
-                        console.log("Error adding font size settings.", request.error);
-                    };
+                    // Add default main_account_id
+                    transaction.objectStore('settings')
+                        .add({
+                            id: 'main_account_id',
+                            val: null
+                        });
                 }
 
                 // Create contacts table

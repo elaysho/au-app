@@ -314,6 +314,13 @@ body {
     overflow: hidden;
 }
 
+.owner-card .contacts-icon {
+    height: 75px !important;
+    width: 75px !important;
+    border-radius: 50% !important;
+    overflow: hidden;
+}
+
 .contacts-icon {
     text-align: center;
 }
@@ -370,7 +377,8 @@ body {
     width: 24px!important;
 }
 
-#upload-photo {
+#upload-photo,
+#upload-contact-photo {
     opacity: 0;
     position: absolute;
     z-index: -1;
