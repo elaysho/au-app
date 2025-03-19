@@ -1,5 +1,5 @@
 var auapp = (function() {
-    let firebase, storageRef;
+    let db = null;
 
     let timeInterval = null;
     let dateInterval = null;
@@ -367,7 +367,7 @@ var auapp = (function() {
         return contacts[contactId] ?? null;
     }
 
-    function addNewContact(event) {
+    async function addNewContact(event) {
         // Get photo link, name, nickname
         let inputs     = $('.new-contact-form .new-contact-form-input');
         let newContact = {};
@@ -426,22 +426,22 @@ var auapp = (function() {
     }
 
     // Photos
-    function displayPhotos(container = 'photos-app') {
-        let photos = localStorage.getItem('photos') ?? JSON.stringify({});
-        photos = JSON.parse(photos);
+    async function displayPhotos(container = 'photos-app') {
+        let photos = await db.transaction('photos').objectStore('photos').getAll();
 
         let cloneItems = $(`#${container} .photo-gallery`).find('.clone-item').clone();
         $(`#${container} .photo-gallery`).html('');
         $(`#${container} .photo-gallery`).append(cloneItems);
 
         $.each(photos, function(i, photo) {
+            let photoId = photo.id;
             let photoDisplay = $(`#${container} .photo-gallery`).find('.clone-item').clone();
 
-            $(photoDisplay).attr('data-photo-id', i);
+            $(photoDisplay).attr('data-photo-id', photoId);
             $(photoDisplay).attr('data-selected-photo', false);
 
-            $(photoDisplay).find('img').attr('src', photo);
-            $(photoDisplay).find('img').attr('data-photo-id', i);
+            $(photoDisplay).find('img').attr('src', photo.val);
+            $(photoDisplay).find('img').attr('data-photo-id', photoId);
             $(photoDisplay).removeClass('clone-item');
             $(photoDisplay).removeClass('hidden');
 
@@ -453,7 +453,6 @@ var auapp = (function() {
 
                     $(this).find('.selected-photo').removeClass('hidden');
                     $(this).attr('data-selected-photo', 'true');
-
                 }
             });
         });
@@ -1421,6 +1420,60 @@ var auapp = (function() {
         $(exportBtn).on('click', exportMessage);
     }
 
+    async function uploadPhoto(event)
+    {
+        const imgPath = document.querySelector('input[type=file]').files[0];
+        const reader  = new FileReader();
+
+        reader.addEventListener("load", async function () {
+            // Convert image file to base64 string and save to localStorage
+            console.log("Store Photo: ", $('#upload-photo').data('store-photo-on-gallery'));
+            if($('#upload-photo').data('store-photo-on-gallery') == true) {
+                let photoId = Date.now();
+                let photo = {
+                    id: photoId,
+                    val: reader.result
+                };
+
+                await db.transaction('photos', 'readwrite').objectStore('photos').add(photo);
+
+                $('#upload-photo').attr('data-store-photo-on-gallery', true);
+                $('#upload-photo').attr('data-append-photo-to', '');
+            }
+
+            // Append to textarea
+            console.log("Append To: ", $('#upload-photo').data('append-photo-to'));
+            if($('#upload-photo').data('data-store-photo-on-gallery') != true) {
+                if($('#upload-photo').data('append-photo-to') != "") {
+                    let appendElementId = $('#upload-photo').data('append-photo-to');
+                    let appendElement   = $(appendElementId);
+
+                    $(appendElement).html(reader.result);
+                    console.log("Updated photo!");
+                }
+
+                $('#upload-photo').attr('data-store-photo-on-gallery', true);
+                $('#upload-photo').attr('data-append-photo-to', '');
+            }
+
+            // Send photo as chat
+            if($('#upload-photo').data('store-photo-on-gallery') != true && $('#upload-photo').data('append-photo-to') == "") {
+                console.log('Sending photo as chat..');
+                sendMessage(reader.result, 'image');
+
+                $('#upload-photo').attr('data-store-photo-on-gallery', true);
+                $('#upload-photo').attr('data-append-photo-to', '');
+            }
+        }, false);
+        
+        if(imgPath) {
+            reader.readAsDataURL(imgPath);
+        }
+
+        $('#upload-photo').attr('data-store-photo-on-gallery', true);
+        $('#upload-photo').attr('data-append-photo-to', '');
+    }
+
     // Events & Initialization
     function bindEvents() {
         $('.app-icon').on('click', appSwitcher);
@@ -1429,6 +1482,18 @@ var auapp = (function() {
         $('.hide-overlay-btn').on('click', hideOverlay);
 
         $('.new-contact-save-btn').on('click', addNewContact);
+        $('.new-contact-form-input').on('blur', function() {
+            let names = ['first-name', 'last-name'];
+
+            if(names.includes($(this).attr('name'))) {
+                let firstName = $('[name="first-name"]').val()[0] ?? '';
+                let lastName = $('[name="last-name"]').val()[0] ?? '';
+                let initials = firstName.toUpperCase() + lastName.toUpperCase();
+
+                $('.contacts-initials').text(initials);
+            }
+        });
+
         $('.btn-preview-photo').on('click', previewContactPhoto);
 
         $('.new-msg-contact').on('click', onClickOfMessageThread);
@@ -1441,68 +1506,7 @@ var auapp = (function() {
 
         $('.export-message-btn').on('click', exportMessage);
 
-        $('#upload-photo').on('change', function() {
-            const imgPath = document.querySelector('input[type=file]').files[0];
-            const reader  = new FileReader();
-
-            reader.addEventListener("load", function () {
-                // Convert image file to base64 string and save to localStorage
-                console.log("Store Photo: ", $('#upload-photo').data('store-photo-on-gallery'));
-                if($('#upload-photo').data('store-photo-on-gallery') == true) {
-                    let photoId = Date.now();
-
-                    // let photos  = localStorage.getItem('photos') ?? JSON.stringify({});
-                    // photos = JSON.parse(photos);
-
-                    // photos[photoId] = reader.result;
-                    // photos = JSON.stringify(photos);
-                    // localStorage.setItem("photos", photos);
-
-                    let photoRef = storageRef.child(`messages/${photoId}`);
-                    photoRef.putString(reader.result, 'data_url').then((snapshot) => {
-                        console.log('Uploaded a data_url string!');
-                        console.log(snapshot);
-                      });
-                      
-
-                    console.log("Stored photo with ID: " + photoId);
-
-                    $('#upload-photo').attr('data-store-photo-on-gallery', true);
-                    $('#upload-photo').attr('data-append-photo-to', '');
-                }
-
-                // Append to textarea
-                console.log("Append To: ", $('#upload-photo').data('append-photo-to'));
-                if($('#upload-photo').data('data-store-photo-on-gallery') != true) {
-                    if($('#upload-photo').data('append-photo-to') != "") {
-                        let appendElementId = $('#upload-photo').data('append-photo-to');
-                        let appendElement   = $(appendElementId);
-
-                        $(appendElement).html(reader.result);
-                        console.log("Updated photo!");
-                    }
-
-                    $('#upload-photo').attr('data-store-photo-on-gallery', true);
-                    $('#upload-photo').attr('data-append-photo-to', '');
-                }
-
-                // Send photo as chat
-                if($('#upload-photo').data('store-photo-on-gallery') != true && $('#upload-photo').data('append-photo-to') == "") {
-                    console.log('Sending photo as chat..');
-                    sendMessage(reader.result, 'image');
-
-                    $('#upload-photo').attr('data-store-photo-on-gallery', true);
-                    $('#upload-photo').attr('data-append-photo-to', '');
-                }
-            }, false);
-            
-            if(imgPath) {
-                reader.readAsDataURL(imgPath);
-            }
-
-            $('#upload-photo').attr('data-store-photo-on-gallery', true);
-            $('#upload-photo').attr('data-append-photo-to', '');
-        });
+        $('#upload-photo').on('change', uploadPhoto);
 
         $('.upload-photo-and-send').on('click', function() {
             $('#upload-photo').attr('data-store-photo-on-gallery', false);
@@ -1526,16 +1530,59 @@ var auapp = (function() {
         });
     }
 
-    function initSettings() {
-        let fontSize = localStorage.getItem('font-size') ?? 16;
+    async function initSettings() {
+        let fontSize = await db.transaction('settings').objectStore('settings').get('font_size') ?? 16;
         $('body').attr('style', `font-size: ${fontSize}px!important`);
     }
 
-    function requestDb() {
-        
+    async function requestDb() {
+        const db = await idb.openDB('auverse', 1, {
+            // Initialize db
+            upgrade(db, oldVersion, newVersion, transaction, event) {
+                // Create settings table
+                if (!db.objectStoreNames.contains('settings')) {
+                    db.createObjectStore('settings', {keyPath: 'id'});
+
+                    // Add default font size
+                    const request = transaction.objectStore('settings')
+                        .add({
+                            id: 'font_size',
+                            val: 16
+                        });
+
+                    // Check request result
+                    request.onsuccess = function() {
+                        console.log("Font size settings initialized.", request.result);
+                    };
+                    
+                    request.onerror = function() {
+                        console.log("Error adding font size settings.", request.error);
+                    };
+                }
+
+                // Create contacts table
+                if (!db.objectStoreNames.contains('contacts')) {
+                    db.createObjectStore('contacts', {keyPath: 'id'});
+                }
+
+                // Create photos table
+                if (!db.objectStoreNames.contains('photos')) {
+                    db.createObjectStore('photos', {keyPath: 'id'});
+                }
+
+                // Create messages table
+                if (!db.objectStoreNames.contains('messages')) {
+                    db.createObjectStore('messages', {keyPath: 'id'});
+                }
+            },
+        });
+
+        return db;
     }
 
-    function init() {
+    async function init() {
+        db = await requestDb();
+
         initIcons();
         initSettings();
 

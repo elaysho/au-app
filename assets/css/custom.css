@@ -308,10 +308,20 @@ body {
 
 .contacts-icon,
 .icon {
-    height: 75px;
-    width: 75px;
-    border-radius: 50%;
+    height: 20rem;
+    width: 20rem;
+    border-radius: 100%;
     overflow: hidden;
+}
+
+.contacts-icon {
+    text-align: center;
+}
+
+.contacts-icon span {
+    font-size: 32px;
+    line-height: 3;
+    color:white;
 }
 
 .photos-icon, 
@@ -916,11 +926,7 @@ input[type="checkbox"].ios8-switch-lg:checked + label:after {
     margin-left: 20px; /* x*2 */
 }
 
-/**
- *
- */
-
- .message-options .icon {
+.message-options .icon {
     height: 34px;
     width: 34px;
 }

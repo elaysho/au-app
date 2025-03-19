@@ -202,19 +202,24 @@
 
                             <div class="new-contact-form w-full flex flex-col contacts-body justify-self-end">
                                 <div class="photo-container w-full flex flex-col justify-center items-center mb-5">
-                                    <div class="contacts-icon">
-                                        <img id="new-contact-photo-preview" class="" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                    <div class="contacts-icon bg-gray-200">
+                                        <!-- <img id="new-contact-photo-preview" class="" src="assets/imgs/iphone/contacts/sample-icon.png"> -->
+                                        <span class="contacts-initials">AB</span>
                                     </div>
+
                                     <!-- <form>
                                         <label for="upload-contact-photo" class="btn btn-sm mt-3 bg-gray-300">Add Photo</label>
                                         <input type="file" name="photo" id="upload-contact-photo" />
                                     </form> -->
                                 </div>
+
                                 <div class="w-full mx-0 join join-vertical rounded-none">
+                                    <!-- Contact Photo Link -->
                                     <div class="w-full join flex">
                                         <input id="contact-photo" type="text" class="input grow join-item new-contact-form-input" name="contact-photo" placeholder="Contact Photo Link">
                                         <button class="btn-preview-photo btn join-item" data-photo-input="contact-photo" data-photo-preview="new-contact-photo-preview">Preview</button>
                                     </div>
+
                                     <input type="text" class="input join-item new-contact-form-input" name="first-name" placeholder="First Name">
                                     <input type="text" class="input join-item new-contact-form-input" name="last-name" placeholder="Last name">
                                     <input type="text" class="input join-item new-contact-form-input" name="nickname" placeholder="Nickname">
@@ -528,7 +533,7 @@
                     </div>
                 </div>
 
-                <!-- Message Theread Settings -->
+                <!-- Message Thread Settings -->
                 <div id="messages-app--msg-settings" class="overlays artboard phone-4 h-full flex flex-col justify-end items-center hidden" data-close-onclick="false">
                     <div class="overflow-page-wrapper message-settings-wrapper bg-gray-100 w-full flex flex-col">
                         <div class="navbar-space text-lg">
@@ -697,6 +702,7 @@
 <script src="assets/js/FileSaver.js"></script>
 <script src="assets/js/canvas-toBlob.js"></script>
 <script src="assets/js/html2canvas.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/idb@8/build/umd.js"></script>
 
 <script src="assets/js/au-app.js" defer></script>
 <script src="assets/js/index.js" defer></script>
