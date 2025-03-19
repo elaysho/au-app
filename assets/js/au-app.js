@@ -1489,6 +1489,10 @@ var auapp = (function() {
                 let firstName = $('[name="first-name"]').val()[0] ?? '';
                 let lastName = $('[name="last-name"]').val()[0] ?? '';
                 let initials = firstName.toUpperCase() + lastName.toUpperCase();
+                
+                if(initials == '') {
+                    initials = 'AB';
+                }
 
                 $('.contacts-initials').text(initials);
             }
