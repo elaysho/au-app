@@ -63,7 +63,7 @@
                                 <div class="flex flex-col justify-center items-center px-1">
                                     <label for="upload-photo" class="w-full flex flex-col justify-center m-0 cursor-pointer">
                                         <img src="assets/imgs/iphone/icons/camera.svg">
-                                        <input type="file" id="upload-photo" class="" data-store-photo-on-gallery="true" data-append-photo-to="">
+                                        <input type="file" id="upload-photo" name="upload-photo" class="" data-store-photo-on-gallery="true" data-append-photo-to="">
                                         <span class="app-name mt-1 text-center">Camera</span>
                                     </label>
                                 </div>
@@ -551,17 +551,23 @@
                         </div>
 
                         <div class="message-settings-form w-full flex flex-col">
-                            <div class="photo-container w-full flex flex-col justify-center items-center mb-5">
+                            <div class="photo-container w-full flex flex-col justify-center items-center mb-3">
                                 <div class="contacts-icon">
                                     <img id="message-photo-preview" class="" src="assets/imgs/iphone/contacts/sample-icon.png">
+                                    <span class="contacts-initials">AB</span>
                                 </div>
                             </div>
 
+                            <div class="w-full flex justify-center mb-5">
+                                <button class="btn-preview-photo btn btn-sm mt-3 bg-gray-300" data-photo-input="upload-photo" data-photo-preview="message-photo-preview">Change</button>
+                            </div>
+
                             <div class="w-full mx-0 join join-vertical rounded-none">
-                                <div class="w-full join flex">
+                                <!-- <div class="w-full join flex justify-center mb-5">
                                     <input id="message-photo" type="text" class="input grow join-item message-settings-input" name="message-photo" placeholder="Custom Photo Link">
                                     <button class="btn-preview-photo btn join-item" data-photo-input="message-photo" data-photo-preview="message-photo-preview">Preview</button>
-                                </div>
+                                </div> -->
+
                                 <input type="text" class="message-nickname input join-item message-settings-input" name="nickname" placeholder="Nickname">
                             </div>
                             <small class="m-3 mb-0">Changes to photo and nickname won't presist.</small>

@@ -350,7 +350,7 @@ var auapp = (function() {
         $('#contacts-app .owner-card').addClass('hidden');
 
         let mainContactId = await db.get('settings', 'main_account_id') ?? null;
-        if(mainContactId != null) {
+        if(mainContactId != null && mainContactId.val !== null) {
             let mainContact = await getContactDetails(mainContactId.val);
 
             $('#contacts-app .owner-card .contacts-icon').find('img').attr('src', mainContact['contact-photo']);
@@ -415,9 +415,24 @@ var auapp = (function() {
 
     function previewContactPhoto(event) {
         let contactPhotoInputId = $(this).data('photo-input');
-        let contactPhotoLink    = $(`#${contactPhotoInputId}`).val();
-
         let contactPhotoPrevId  = $(this).data('photo-preview');
+
+        let contactPhotoLink    = null;
+        if($(`#${contactPhotoInputId}`).attr('type') == 'text') {
+            contactPhotoLink = $(`#${contactPhotoInputId}`).val();
+        }
+
+        if($(`#${contactPhotoInputId}`).attr('type') == 'file') {
+            $('#upload-photo').attr('data-store-photo-on-gallery', false);
+            $('#upload-photo').attr('data-new-contact-photo-prewiew', true);
+            $('#upload-photo').attr('data-photo-preview-id', contactPhotoPrevId);
+            $('#upload-photo').attr('data-append-photo-to', '');
+
+            $(`#${contactPhotoInputId}`).click();
+
+            return;
+        }
+
         $(`#${contactPhotoPrevId}`).attr('src', contactPhotoLink);
     }
 
@@ -715,23 +730,20 @@ var auapp = (function() {
         }
     }
 
-    function displayMessageSettings() {
+    async function displayMessageSettings() {
         let messageId = $('#messages-app--msg').data('current-message-thread');
         if(messageId == undefined || messageId == null) {
             return;
         }
 
-        let messages = localStorage.getItem('messages') ?? JSON.stringify({});
-        messages = JSON.parse(messages);
-
-        let messageThread = messages[messageId] ?? null;
+        let messageThread = await db.get('messages', messageId);
         if(messageThread == null) {
             hideOverlayById('messages-app--msg-settings');
         }
 
         messageThread['contact']['contact-icon'] = messageThread['contact']['contact-icon'] ?? messageThread['contact']['contact-photo'];
         $('#messages-app--msg-settings .contacts-icon img').attr('src', messageThread['contact']['contact-icon']);
-        $('#messages-app--msg-settings .btn-preview-photo').on('click', previewContactPhoto);
+        // $('#messages-app--msg-settings .btn-preview-photo').on('click', previewContactPhoto);
 
         let nickname = messageThread['contact']['nickname'] ?? null;
         $('#messages-app--msg-settings .message-nickname').val(nickname);
@@ -747,16 +759,13 @@ var auapp = (function() {
         $('#messages-app--msg-settings .delete-message').on('click', deleteMessageThread);
 
         $('#messages-app--msg-settings .message-save-settings').attr('data-message-id', messageId);
-        $('#messages-app--msg-settings .message-save-settings').on('click', function() {
+        $('#messages-app--msg-settings .message-save-settings').on('click', async function() {
             let messageId = $('#messages-app--msg').data('current-message-thread');
             if(messageId == undefined || messageId == null) {
                 return;
             }
-
-            let messages = localStorage.getItem('messages') ?? JSON.stringify({});
-            messages = JSON.parse(messages);
     
-            let messageThread = messages[messageId] ?? null;
+            let messageThread = await db.get('messages', messageId);
             if(messageThread == null) {
                 hideOverlayById('messages-app--msg-settings');
             }
@@ -766,16 +775,17 @@ var auapp = (function() {
             isPinned = isPinned == "yes" ? true : false;
             messageThread['is-pinned'] = isPinned;
 
-            messages[messageId] = messageThread;
-            messages            = JSON.stringify(messages);
-            localStorage.setItem('messages', messages);
+            await db.put('messages', messageThread);
 
             let fontSize = $('#messages-app--msg-settings .font-size').val();
-            localStorage.setItem('font-size', fontSize);
-            initSettings();
+            await db.put('settings', {id: 'font_size', val: fontSize});
 
             // Apply custom photo and nickname
-            let customPhoto    = $('#message-photo').val();
+            let customPhoto    = $('#message-photo-preview').val();
+            if(customPhoto == '') {
+                customPhoto = $('#message-photo-preview').attr('src') ?? '';
+            }
+
             let customNickname = $('#messages-app--msg-settings .message-nickname').val();
 
             $('#messages-app--msg .message-name span').html(customNickname);
@@ -879,14 +889,14 @@ var auapp = (function() {
     }
 
     async function openMessageThread(contactId) {
-        let messages = await db.getAll('messages');
+        // let messages = await db.getAll('messages');
 
         let contact = await getContactDetails(contactId);
         if(contact === null) {
             return;
         }
 
-        let messageThread = await db.getKey('messages', contactId) ?? null;
+        let messageThread = await db.get('messages', contactId) ?? null;
         if(messageThread == null) {
             messageThread = await createMessageThread(contact);
         }
@@ -981,7 +991,7 @@ var auapp = (function() {
         sendMessage($('.message-textfield').val(), 'text');
     }
 
-    function sendMessage(content = null, type = 'text') {
+    async function sendMessage(content = null, type = 'text') {
         if(content == null) {
             return;
         }
@@ -1023,7 +1033,7 @@ var auapp = (function() {
         };
 
         // Store and display chat bubble
-        storeChatBubble(messageThreadId, bubble);
+        await storeChatBubble(messageThreadId, bubble);
         displayChatBubble(bubble);
 
         // Clear text field
@@ -1032,11 +1042,9 @@ var auapp = (function() {
         }
     }
 
-    function storeChatBubble(messageThreadId, bubble) {
-        let messages = localStorage.getItem('messages') ?? JSON.stringify({});
-        messages = JSON.parse(messages);
+    async function storeChatBubble(messageThreadId, bubble) {
+        let messageThread = await db.get('messages', messageThreadId);
 
-        let messageThread = messages[messageThreadId] ?? null;
         if(messageThread !== null) {
             messageThread['thread'][bubble['id']] = bubble;
             messageThread['last-message-date'] = bubble['date'];
@@ -1047,10 +1055,9 @@ var auapp = (function() {
             if(bubble['type'] == 'image') {
                 messageThread['preview-message'] = 'Attachment: 1';
             }
-        }
 
-        messages[messageThreadId] = messageThread;
-        localStorage.setItem('messages', JSON.stringify(messages));
+            await db.put('messages', messageThread);
+        }
     }
 
     function displayChatBubble(bubble, messageBody = null) {
@@ -1428,11 +1435,14 @@ var auapp = (function() {
         reader.addEventListener("load", async function () {
             // New contact photo preview
             if($('#upload-photo').data('new-contact-photo-prewiew') == true) {
-                $('#new-contact-photo-preview').attr('src', reader.result);
-                $('#new-contact-photo-preview').removeClass('hidden');
+                let photoPrevId = $('#upload-photo').data('photo-preview-id') ?? 'new-contact-photo-preview';
+
+                $(`#${photoPrevId}`).attr('src', reader.result);
+                $(`#${photoPrevId}`).removeClass('hidden');
 
                 $('#upload-photo').attr('data-store-photo-on-gallery', true);
                 $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
+                $('#upload-photo').attr('data-photo-preview-id', undefined);
                 $('#upload-photo').attr('data-append-photo-to', '');
 
                 return;
@@ -1451,6 +1461,7 @@ var auapp = (function() {
 
                 $('#upload-photo').attr('data-store-photo-on-gallery', true);
                 $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
+                $('#upload-photo').attr('data-photo-preview-id', undefined);
                 $('#upload-photo').attr('data-append-photo-to', '');
 
                 return;
@@ -1469,6 +1480,7 @@ var auapp = (function() {
 
                 $('#upload-photo').attr('data-store-photo-on-gallery', true);
                 $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
+                $('#upload-photo').attr('data-photo-preview-id', undefined);
                 $('#upload-photo').attr('data-append-photo-to', '');
 
                 return;
@@ -1485,6 +1497,7 @@ var auapp = (function() {
 
             $('#upload-photo').attr('data-store-photo-on-gallery', true);
             $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
+            $('#upload-photo').attr('data-photo-preview-id', undefined);
             $('#upload-photo').attr('data-append-photo-to', '');
         }, false);
         
