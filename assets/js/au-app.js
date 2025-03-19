@@ -625,9 +625,8 @@ var auapp = (function() {
         return messages[contactId].thread[chatId] ?? null;
     }
 
-    function displayMessagesList() {
-        let messages = localStorage.getItem('messages') ?? JSON.stringify({});
-        messages = JSON.parse(messages);
+    async function displayMessagesList() {
+        let messages = await db.getAll('messages');
 
         // Dipslay pinned messages (Coming Soon)
         let messageListContainer = $('#messages-app--home .pin-messages');
@@ -708,6 +707,12 @@ var auapp = (function() {
                 $(messageList).find('.message-swipe').on('click', onClickOfMessageThread);
             }
         });
+
+        // Show empty state if message list is empty
+        $('.message-list-empty').addClass('hidden');
+        if(Object.keys(messages).length === 0 || Object.keys(messages).length === undefined) {
+            $('.message-list-empty').removeClass('hidden');
+        }
     }
 
     function displayMessageSettings() {
@@ -873,18 +878,17 @@ var auapp = (function() {
         openMessageThread(contactId);
     }
 
-    function openMessageThread(contactId) {
-        let messages = localStorage.getItem('messages') ?? JSON.stringify({});
-        messages = JSON.parse(messages);
+    async function openMessageThread(contactId) {
+        let messages = await db.getAll('messages');
 
-        let contact = getContactDetails(contactId);
+        let contact = await getContactDetails(contactId);
         if(contact === null) {
             return;
         }
 
-        let messageThread = messages[contactId] ?? null;
+        let messageThread = await db.getKey('messages', contactId) ?? null;
         if(messageThread == null) {
-            messageThread = createMessageThread(contact, messages);
+            messageThread = await createMessageThread(contact);
         }
         
         if(messageThread !== null) {
@@ -908,8 +912,9 @@ var auapp = (function() {
         }
     }
 
-    function createMessageThread(contact, messages) {
-        messages[contact['contact-id']] = {
+    async function createMessageThread(contact) {
+        let newMessage = {
+            'id': contact['contact-id'],
             'contact': contact,
             'preview-message': null,
             'last-message-date': null,
@@ -918,9 +923,8 @@ var auapp = (function() {
             'is-pinned': false,
         };
 
-        let newMessage = messages[contact['contact-id']];
-        messages = JSON.stringify(messages);
-        localStorage.setItem('messages', messages);
+        await db.transaction('messages', 'readwrite').objectStore('messages')
+            .add(newMessage);
 
         console.log('Creates new thread of message!');
         return newMessage;
