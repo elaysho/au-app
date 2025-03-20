@@ -67,11 +67,15 @@ var auapp = (function() {
     }
 
     // Screen/App Switcher
-    function switchApp(appId = null, element = null) {
+    async function switchApp(appId = null, element = null) {
+        console.log(element);
+
         let currentAppId = $('.display .artboard.active').attr('id');
         if(appId == null && element != null) {
             appId = $(element).data('screen-id');
         }
+
+        console.log(appId);
 
         if(appId !== '') {
             $('.display .artboard').removeClass('active');
@@ -79,6 +83,11 @@ var auapp = (function() {
 
             $(`#${appId}`).removeClass('hidden');
             $(`#${appId}`).addClass('active');
+        } else {
+            $('#homescreen-notifications-container').removeClass('hidden');
+            setTimeout(function() {
+                $('#homescreen-notifications-container').addClass('hidden');
+            }, 4000);
         }
 
         switch(appId) {
@@ -750,7 +759,7 @@ var auapp = (function() {
             $('#messages-app--msg-settings .pin-message-setting').val('yes').change();
         }
 
-        let defaultFontSize = await db.get('settings', 'font_size') ?? null;
+        let defaultFontSize = await db.get('settings', 'font_size').val ?? 16;
         $('#messages-app--msg-settings .font-size').val(defaultFontSize);
 
         $('#messages-app--msg-settings .delete-message').attr('data-message-id', messageId);
@@ -822,21 +831,15 @@ var auapp = (function() {
 
         // Delete the chat bubble
         $('#messages-app--chat-settings .delete-chat').attr('data-chat-id', chatId);
-        $('#messages-app--chat-settings .delete-chat').on('click', function() {
+        $('#messages-app--chat-settings .delete-chat').on('click', async function() {
             let chatId    = $(this).data('chat-id');
-            let chat      = getMessage(chatId);
+            let chat      = await getMessage(chatId);
             let messageId = chat['message-thread-id'];
 
-            let messages  = localStorage.getItem('messages') ?? JSON.stringify({});
-            messages      = JSON.parse(messages);
-
-            let message   = messages[messageId] ?? null;
-            if(message != null) {
-                delete message['thread'][chatId];
-
-                messages[messageId] = message;
-                messages = JSON.stringify(messages);
-                localStorage.setItem('messages', messages);
+            let messageThread   = await db.get('messages', messageId);
+            if(messageThread != null) {
+                delete messageThread['thread'][chatId];
+                await db.put('messages', messageThread);
 
                 hideOverlayById('messages-app--chat-settings');
                 openMessageThread(messageId);
@@ -958,19 +961,12 @@ var auapp = (function() {
         displayMessagesList();
     }
 
-    function deleteMessageThread(event) {
+    async function deleteMessageThread(event) {
         let messages = localStorage.getItem('messages') ?? JSON.stringify({});
         messages = JSON.parse(messages);
 
         let messageId = $(this).data('message-id');
-        let message = messages[messageId] ?? null;
-
-        if(message != null) {
-            delete messages[messageId];
-
-            messages = JSON.stringify(messages);
-            localStorage.setItem('messages', messages);
-        }
+        await db.delete('messages', messageId);
         
         displayMessagesList();
     }
@@ -1103,7 +1099,7 @@ var auapp = (function() {
 
         let reactWrapper = null;
         if(react !== null) {
-            reactWrapper = displayBubbleReact(bubble, bubbleElement, react, reactFrom);
+            reactWrapper = displayBubbleReact(bubble, bubbleElement, null, react, reactFrom);
 
             // Add to message body
             $(stackedMessages).append(reactWrapper);
@@ -1174,24 +1170,43 @@ var auapp = (function() {
         return photo.val;
     }
 
-    function displayBubbleReact(bubble, bubbleElement, react, reactFrom) {
+    function displayBubbleReact(bubble, bubbleElement, bubbleParent, react, reactFrom) {        
         let reactWrapper = $('<div class="react-wrapper flex mt-4 justify-start" style="position: relative;">');
         if(bubble['sender'] == 'from-me') {
             reactWrapper = $('<div class="react-wrapper flex mt-4 justify-end" style="position: relative;">');
         }
 
-        let reactIcon     = $('<img class="react-icon" />');
-        let iconImageRoot = "assets/imgs/iphone/messages/";
-        let reactIconImg  = iconImageRoot.concat(getReactIcon(react, bubble['sender'], reactFrom));
+        let reactsToDisplay = bubble['reacts'];
+        if(bubbleParent != null) {
+            reactWrapper = bubbleParent;
+            reactsToDisplay = {
+                reactFrom: react
+            };
+        }
 
-        $(reactIcon).attr('src', reactIconImg);
-        $(reactIcon).attr('data-chat-id', bubble['id']);
-        $(reactIcon).attr('data-react', react);
-        $(reactIcon).attr('data-react-from', reactFrom);
-        $(bubbleElement).prepend(reactIcon);
+        $.each(reactsToDisplay, function(reactFrom, react) {
+            if(react == null) {
+                return true;
+            }
 
-        // $(reactWrapper).append(reactIcon);
-        $(reactWrapper).append(bubbleElement);
+            let reactIcon     = $('<img class="react-icon" />');
+            let iconImageRoot = "assets/imgs/iphone/messages/";
+
+            let reactIconImg  = iconImageRoot.concat(getReactIcon(react, bubble['sender'], reactFrom));
+
+            $(reactIcon).attr('src', reactIconImg);
+            $(reactIcon).attr('data-chat-id', bubble['id']);
+            $(reactIcon).attr('data-react', react);
+            $(reactIcon).attr('data-react-from', reactFrom);
+
+            $(bubbleElement).prepend(reactIcon);
+        });
+
+        if(bubbleParent == null) {
+            $(reactWrapper).append(bubbleElement);
+        } else {
+            $(reactWrapper).find(`.${bubble['sender']}`).replace(bubbleElement);
+        }
 
         return reactWrapper;
     }
@@ -1257,11 +1272,12 @@ var auapp = (function() {
         let bblWrapper    = $('#messages-app--msg [data-chat-id="' + chatId + '"]').parent();
 
         if($(this).hasClass('btn-remove-react') == false) {
-            if($(bblWrapper).hasClass('react-wrapper')) {
-                bubbleElement = bubbleElement[1];
-            }
+            // if($(bblWrapper).hasClass('react-wrapper')) {
+            //     bubbleElement = bubbleElement[1];
+            // }
 
-            let reactWrapper  = displayBubbleReact(message, bubbleElement, react, reactFrom);
+            let parentBubble  = $(bblWrapper).hasClass('react-wrapper') ? bblWrapper : null;
+            let reactWrapper  = displayBubbleReact(message, bubbleElement, parentBubble, react, reactFrom);
 
             // Replace the current react wrapper
             if($(bblWrapper).hasClass('react-wrapper')) {
@@ -1274,17 +1290,23 @@ var auapp = (function() {
 
             // repositionBubbleReact(message, bubbleElement, reactWrapper);
         } else {
-            if($(bblWrapper).hasClass('react-wrapper')) {
-                if(bubbleElement.length > 1) {
-                    bubbleElement = bubbleElement[1];
-                }
+            // if($(bblWrapper).hasClass('react-wrapper')) {
+            //     if(bubbleElement.length > 1) {
+            //         bubbleElement = bubbleElement[1];
+            //     }
 
-                $(bblWrapper).replaceWith(bubbleElement);
-            }
+            //     $(bblWrapper).replaceWith(bubbleElement);
+            // }
+
+            $('#messages-app--msg [data-chat-id="' + chatId + '"]').find('.react-icon').remove();
         }
     }
 
     function getReactIcon(react, bubbleSender, reactFrom, systemTheme = 'light') {
+        if(react == null) {
+            return;
+        }
+
         let reactIcons = {
             'heart': {
                 'from-me': {
@@ -1557,7 +1579,7 @@ var auapp = (function() {
     }
 
     async function initSettings() {
-        let fontSize = await db.transaction('settings').objectStore('settings').get('font_size') ?? 16;
+        let fontSize = await db.get('settings', 'font_size').val ?? 16;
         $('body').attr('style', `font-size: ${fontSize}px!important`);
     }
 

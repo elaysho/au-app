@@ -14,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/sf-ui-text-2" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet"/>
 
     <!-- <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.0/dist/full.min.css" rel="stylesheet" type="text/css" /> -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
@@ -535,7 +536,7 @@
                             </div>
 
                             <div class="w-full flex flex-col mt-3 mb-5 px-5">
-                                <button class="btn-remove-react react-select btn btn-block bg-red-500 hover:bg-red-400 text-white mt-5">Remove React</button>
+                                <button class="btn-remove-react react-select btn btn-block bg-red-500 hover:bg-red-400 text-white mt-5">Remove All React</button>
                             </div>
                         </div>
                     </div>
@@ -706,6 +707,30 @@
                     </div>
                 </div>
 
+                
+            </div>
+
+            <!-- Notifications -->
+            <div id="homescreen-notifications-container" class="overlays-container bg-opacity-0 w-full h-full flex justify-center items-center hidden">
+                <div id="homescreen-notifications" class="artboard phone-4 h-full flex flex-col justify-start mt-10 px-3">
+                    <div class="push__box animate__animated animate__backInDown">
+                        <div class="push__content">
+                            <div class="push__top">
+                                <div class="col">
+                                    <img class="push__icon" src="assets/imgs/iphone/icons/settings.svg" alt="">
+                                    <span class="ml-2 push__title">auverse</span>
+                                </div>
+                                <div class="col">
+                                    <div class="push__time">now</div>
+                                </div>
+                            </div>
+                            <div class="push__main">
+                                <div class="push__person"></div>
+                                <p class="push__msg">Sorry! This feature is still under construction.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
