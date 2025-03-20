@@ -68,14 +68,10 @@ var auapp = (function() {
 
     // Screen/App Switcher
     async function switchApp(appId = null, element = null) {
-        console.log(element);
-
         let currentAppId = $('.display .artboard.active').attr('id');
         if(appId == null && element != null) {
             appId = $(element).data('screen-id');
         }
-
-        console.log(appId);
 
         if(appId !== '') {
             $('.display .artboard').removeClass('active');
@@ -850,8 +846,6 @@ var auapp = (function() {
             $('#upload-photo').attr('data-store-photo-on-gallery', false);
             $('#upload-photo').attr('data-append-photo-to', '#messages-app--chat-settings .chat-content');
             $('#upload-photo').click();
-
-            console.log($('#upload-photo').data('store-photo-on-gallery'));
         });
 
         $('#messages-app--chat-settings .chat-save-settings').attr('data-chat-id', chatId);
@@ -1285,7 +1279,6 @@ var auapp = (function() {
             } else {
                 // Replace chat bubble with react wrapper
                 $('#messages-app--msg [data-chat-id="' + chatId + '"]').replaceWith(reactWrapper);
-                console.log(reactWrapper);
             }
 
             // repositionBubbleReact(message, bubbleElement, reactWrapper);

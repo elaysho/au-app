@@ -129,6 +129,7 @@ body {
     position: relative;
 }
 
+.homescreen-notifications-overlays-container,
 .overlays-container {
     position: absolute;
     top: 0;
