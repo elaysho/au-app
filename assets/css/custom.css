@@ -187,7 +187,10 @@ body {
  *
  **/
 
-.iOS-16, .iOS-17, .iOS-gradient-1 {
+.iOS-16, 
+.iOS-17, 
+.iOS-17-titanium, 
+.iOS-gradient-1 {
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -198,6 +201,17 @@ body {
 
 .iOS-17 {
     background-image: url('../imgs/iphone/wallpaper/iOS-17-iPhone14.png');
+}
+
+.iOS-17-titanium
+{
+    background-image: url('../imgs/iphone/wallpaper/iOS-17-titanium.webp');
+}
+
+.homescreen.iOS-17-titanium .app-name,
+.homescreen.iOS-17-titanium .search
+{
+    color: #fff !important;
 }
 
 .iOS-gradient-1 {
@@ -237,7 +251,7 @@ body {
 }
 
 .homescreen .calendar-date {
-    font-size: 98px!important;
+    font-size: 86px!important;
     line-height: .75;
 }
 
@@ -590,8 +604,13 @@ p.from-me ~ p.from-me:last-child {
 
 .message-body .from-me.image,
 .message-body .from-them.image {
-    overflow: hidden!important;
+    /* overflow: hidden!important; */
     padding: unset!important;
+}
+
+.message-body .from-me.image img,
+.message-body .from-them.image img {
+    border-radius: 1.15rem;
 }
 
 p.from-them {
@@ -626,6 +645,16 @@ p[class^="from-"].emoji::before {
 
 .no-tail::before {
     display: none;
+}
+
+p.from-me .react-icon {
+    top: -20px !important;
+    left: -20px !important;
+}
+
+p.from-them .react-icon {
+    top: -20px !important;
+    right: -20px !important;
 }
 
 .margin-b_none {

@@ -468,11 +468,11 @@ var auapp = (function() {
             });
         });
 
-        $(`#${container}`).find('.choose-photo-btn').on('click', function() {
+        $(`#${container}`).find('.choose-photo-btn').on('click', async function() {
             let selectedPhoto   =  $(`#${container} .photo-gallery`).find('[data-selected-photo="true"');
             let selectedPhotoId = $(selectedPhoto).data('photo-id');
 
-            sendMessage(getPhotoFromGallery(selectedPhotoId), 'image');
+            sendMessage(await getPhotoFromGallery(selectedPhotoId), 'image');
             hideOverlayById(container);
         });
         
@@ -628,16 +628,14 @@ var auapp = (function() {
         }
     }
 
-    function getMessage(chatId) {
+    async function getMessage(chatId) {
         let contactId = $('#messages-app--msg').data('current-message-thread');
         if(contactId == undefined || contactId == null) {
             return;
         }
 
-        let messages  = localStorage.getItem('messages') ?? JSON.stringify({});
-        messages = JSON.parse(messages);
-
-        return messages[contactId].thread[chatId] ?? null;
+        let messageThread = await db.get('messages', contactId);
+        return messageThread.thread[chatId] ?? null;
     }
 
     async function displayMessagesList() {
@@ -752,7 +750,7 @@ var auapp = (function() {
             $('#messages-app--msg-settings .pin-message-setting').val('yes').change();
         }
 
-        let defaultFontSize = localStorage.getItem('font-size') ?? 16;
+        let defaultFontSize = await db.get('settings', 'font_size') ?? null;
         $('#messages-app--msg-settings .font-size').val(defaultFontSize);
 
         $('#messages-app--msg-settings .delete-message').attr('data-message-id', messageId);
@@ -798,12 +796,9 @@ var auapp = (function() {
         });
     }
 
-    function displayChatSettings() {
+    async function displayChatSettings() {
         let chatId  = $('#messages-app--msg-tapback .display-chat-settings-btn').attr('data-chat-id');
-        let message = getMessage(chatId);
-
-        console.log("Message: ");
-        console.log(message);
+        let message = await getMessage(chatId);
 
         // Display chat settings
         $('#messages-app--chat-settings .chat-content').removeClass('hidden');
@@ -857,13 +852,10 @@ var auapp = (function() {
         });
 
         $('#messages-app--chat-settings .chat-save-settings').attr('data-chat-id', chatId);
-        $('#messages-app--chat-settings .chat-save-settings').on('click', function() {
+        $('#messages-app--chat-settings .chat-save-settings').on('click', async function() {
             let chatId    = $(this).data('chat-id');
-            let chat      = getMessage(chatId);
+            let chat      = await getMessage(chatId);
             let messageId = chat['message-thread-id'];
-
-            let messages = localStorage.getItem('messages') ?? JSON.stringify({});
-            messages = JSON.parse(messages);
 
             if(chat != null) {
                 chat['content']   = $('#messages-app--chat-settings .chat-content').val();
@@ -873,9 +865,10 @@ var auapp = (function() {
                 chat['read']      = chat['read'] == 'yes' ? true : false;
                 chat['read-at']   = $('#messages-app--chat-settings .read-at-chat-setting').val();
 
-                messages[messageId]['thread'][chatId] = chat;
-                messages = JSON.stringify(messages);
-                localStorage.setItem('messages', messages);
+                let messageThread = await db.get('messages', messageId);
+                messageThread.thread[chatId] = chat;
+
+                await db.put('messages', messageThread);
 
                 hideOverlayById('messages-app--chat-settings');
                 openMessageThread(messageId);
@@ -953,18 +946,13 @@ var auapp = (function() {
         $('.message-body').scrollTop($('.message-body')[0].scrollHeight);
     }
 
-    function pinMessage(event) {
-        let messages = localStorage.getItem('messages') ?? JSON.stringify({});
-        messages = JSON.parse(messages);
-
+    async function pinMessage(event) {
         let messageId = $(this).data('message-id');
-        let message = messages[messageId] ?? null;
+        let messageThread = await db.get('messages', messageId);
 
-        if(message != null) {
-            message['is-pinned'] = true;
-            messages[messageId] = message;
-            messages = JSON.stringify(messages);
-            localStorage.setItem('messages', messages);
+        if(messageThread != null) {
+            messageThread['is-pinned'] = true;
+            await db.put('messages', messageThread);
         }
 
         displayMessagesList();
@@ -1123,7 +1111,7 @@ var auapp = (function() {
             $('.messages-app--msg .message-body').scrollTop($('.message-body')[0].scrollHeight);
 
             // Reposition react icons base on bubble's width
-            repositionBubbleReact(bubble, bubbleElement, reactWrapper);
+            // repositionBubbleReact(bubble, bubbleElement, reactWrapper);
         } else {
             // Add to message body
             $(stackedMessages).append(bubbleElement);
@@ -1149,7 +1137,7 @@ var auapp = (function() {
 
             if(react !== null && reactWrapper !== null) {
                 // Reposition react icons base on bubble's width
-                repositionBubbleReact(bubble, bubbleElement, reactWrapper);
+                // repositionBubbleReact(bubble, bubbleElement, reactWrapper);
             }
         } 
 
@@ -1181,11 +1169,9 @@ var auapp = (function() {
         };
     }
 
-    function getPhotoFromGallery(photoId) {
-        let photos = localStorage.getItem('photos') ?? JSON.stringify({});
-        photos = JSON.parse(photos);
-
-        return photos[photoId] ?? null;
+    async function getPhotoFromGallery(photoId) {
+        let photo = await db.get('photos', photoId) ?? null;
+        return photo.val;
     }
 
     function displayBubbleReact(bubble, bubbleElement, react, reactFrom) {
@@ -1202,8 +1188,9 @@ var auapp = (function() {
         $(reactIcon).attr('data-chat-id', bubble['id']);
         $(reactIcon).attr('data-react', react);
         $(reactIcon).attr('data-react-from', reactFrom);
+        $(bubbleElement).prepend(reactIcon);
 
-        $(reactWrapper).append(reactIcon);
+        // $(reactWrapper).append(reactIcon);
         $(reactWrapper).append(bubbleElement);
 
         return reactWrapper;
@@ -1211,18 +1198,16 @@ var auapp = (function() {
 
     function repositionBubbleReact(bubble, bubbleElement, reactWrapper) {
         let reactIcon  = $(reactWrapper).find('.react-icon');
+        let reactFrom  = $(reactIcon).data('react-from');
         let width      = $(bubbleElement).innerWidth() - 15;
         let height     = ($(bubbleElement).innerHeight() - $(reactIcon).innerHeight()) / 3;
 
-        console.log("Height: " + height);
-        console.log("Width: " + width);
-
-        if(bubble['sender'] == 'from-me') {
-            $(reactIcon).attr('style', `right: ${width}px!important; top: -${height}px!important;`);
+        if(bubble['sender'] = 'from-me') {
+            $(reactIcon).attr('style', `left: -20px!important; top: -20px!important;`);
         }
 
         if(bubble['sender'] == 'from-them') {
-            $(reactIcon).attr('style', `left: ${width}px!important; top: -${height}px!important;`);
+            $(reactIcon).attr('style', `right: -20px!important; top: -20px!important;`);
         }
 
         if(mobileCheck()) {
@@ -1247,9 +1232,9 @@ var auapp = (function() {
         }
     }
 
-    function updateChatBubbleReact(event) {
+    async function updateChatBubbleReact(event) {
         let chatId  = $(this).data('chat-id');
-        let message = getMessage(chatId);
+        let message = await getMessage(chatId);
 
         let reactFrom = $(this).data('chat-react-from');
         let react     = $(this).data('react');
@@ -1261,16 +1246,9 @@ var auapp = (function() {
             message['reacts']['from-them'] = null;
         }
 
-        let messages  = localStorage.getItem('messages') ?? JSON.stringify({});
-        messages = JSON.parse(messages);
-
-        let messageThread = messages[message['message-thread-id']] ?? null;
-        messageThread['thread'][chatId] = message;
-
-        messages[message['message-thread-id']] = messageThread;
-
-        messages = JSON.stringify(messages);
-        localStorage.setItem('messages', messages);
+        let messageThread = await db.get('messages', message['message-thread-id']);
+        messageThread.thread[chatId] = message;
+        await db.put('messages', messageThread);
 
         hideOverlayById('messages-app--msg-tapback-react');
 
@@ -1291,9 +1269,10 @@ var auapp = (function() {
             } else {
                 // Replace chat bubble with react wrapper
                 $('#messages-app--msg [data-chat-id="' + chatId + '"]').replaceWith(reactWrapper);
+                console.log(reactWrapper);
             }
 
-            repositionBubbleReact(message, bubbleElement, reactWrapper);
+            // repositionBubbleReact(message, bubbleElement, reactWrapper);
         } else {
             if($(bblWrapper).hasClass('react-wrapper')) {
                 if(bubbleElement.length > 1) {
@@ -1444,6 +1423,7 @@ var auapp = (function() {
                 $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
                 $('#upload-photo').attr('data-photo-preview-id', undefined);
                 $('#upload-photo').attr('data-append-photo-to', '');
+                $('#upload-photo').attr('data-upload-photo-and-send', false);
 
                 return;
             }
@@ -1463,13 +1443,14 @@ var auapp = (function() {
                 $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
                 $('#upload-photo').attr('data-photo-preview-id', undefined);
                 $('#upload-photo').attr('data-append-photo-to', '');
+                $('#upload-photo').attr('data-upload-photo-and-send', false);
 
                 return;
             }
 
             // Append to textarea
             console.log("Append To: ", $('#upload-photo').data('append-photo-to'));
-            if($('#upload-photo').data('store-photo-on-gallery') != true) {
+            if($('#upload-photo').data('store-photo-on-gallery') != true && $('#upload-photo').data('append-photo-to') != "") {
                 if($('#upload-photo').data('append-photo-to') != "") {
                     let appendElementId = $('#upload-photo').data('append-photo-to');
                     let appendElement   = $(appendElementId);
@@ -1482,23 +1463,25 @@ var auapp = (function() {
                 $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
                 $('#upload-photo').attr('data-photo-preview-id', undefined);
                 $('#upload-photo').attr('data-append-photo-to', '');
+                $('#upload-photo').attr('data-upload-photo-and-send', false);
 
                 return;
             }
 
             // Send photo as chat
-            if($('#upload-photo').data('store-photo-on-gallery') != true && $('#upload-photo').data('append-photo-to') == "") {
+            console.log("Upload photo and send: ", $('#upload-photo').data('upload-photo-and-send'));
+            if($('#upload-photo').data('upload-photo-and-send') == true) {
                 console.log('Sending photo as chat..');
                 sendMessage(reader.result, 'image');
 
                 $('#upload-photo').attr('data-store-photo-on-gallery', true);
+                $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
+                $('#upload-photo').attr('data-photo-preview-id', undefined);
                 $('#upload-photo').attr('data-append-photo-to', '');
-            }
+                $('#upload-photo').attr('data-upload-photo-and-send', false);
 
-            $('#upload-photo').attr('data-store-photo-on-gallery', true);
-            $('#upload-photo').attr('data-new-contact-photo-prewiew', false);
-            $('#upload-photo').attr('data-photo-preview-id', undefined);
-            $('#upload-photo').attr('data-append-photo-to', '');
+                return;
+            }
         }, false);
         
         if(imgPath) {
@@ -1546,6 +1529,7 @@ var auapp = (function() {
 
         $('.upload-photo-and-send').on('click', function() {
             $('#upload-photo').attr('data-store-photo-on-gallery', false);
+            $('#upload-photo').attr('data-upload-photo-and-send', true);
             $('#upload-photo').click();
             hideOverlayById('messages-app--msg-options');
         });
